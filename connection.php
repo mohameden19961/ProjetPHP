@@ -1,8 +1,17 @@
 <?php
 session_start();
 
+// --- REMPLACE TA LIGNE 5 PAR CE BLOC ---
+$host     = $_ENV['MYSQLHOST']     ?? 'localhost';
+$user     = $_ENV['MYSQLUSER']     ?? 'root';
+$password = $_ENV['MYSQLPASSWORD'] ?? '';
+$database = $_ENV['MYSQLDATABASE'] ?? 'gestion_cabinet_medical';
+$port     = $_ENV['MYSQLPORT']     ?? '3306';
+
+$conn = new mysqli($host, $user, $password, $database, $port);
+// ---------------------------------------
 // Établir la connexion à la base de données
-$conn = new mysqli("localhost", "root", "", "gestion_cabinet_medical");
+// $conn = new mysqli("localhost", "root", "", "gestion_cabinet_medical");
 
 // Vérifier la connexion
 if ($conn->connect_error) {
