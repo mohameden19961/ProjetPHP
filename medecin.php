@@ -15,7 +15,15 @@ $msg_type = $_SESSION['msg_type'] ?? '';
 unset($_SESSION['message']);
 unset($_SESSION['msg_type']);
 
-$conn = new mysqli("localhost", "root", "", "gestion_cabinet_medical");
+$host     = $_ENV['MYSQLHOST']     ?? 'localhost';
+$user     = $_ENV['MYSQLUSER']     ?? 'root';
+$password = $_ENV['MYSQLPASSWORD'] ?? 'DyYnWTGZpTsbOGIwiJDrwFizzgTKYGYn';
+$database = $_ENV['MYSQLDATABASE'] ?? 'gestion_cabinet_medical';
+$port     = $_ENV['MYSQLPORT']     ?? '3306';
+
+$conn = new mysqli($host, $user, $password, $database, $port);
+
+// $conn = new mysqli("localhost", "root", "", "gestion_cabinet_medical");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }

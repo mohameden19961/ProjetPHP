@@ -6,7 +6,15 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'assistant') {
     exit;
 }
 
-$conn = new mysqli("localhost", "root", "", "gestion_cabinet_medical");
+$host     = $_ENV['MYSQLHOST']     ?? 'localhost';
+$user     = $_ENV['MYSQLUSER']     ?? 'root';
+$password = $_ENV['MYSQLPASSWORD'] ?? 'DyYnWTGZpTsbOGIwiJDrwFizzgTKYGYn';
+$database = $_ENV['MYSQLDATABASE'] ?? 'gestion_cabinet_medical';
+$port     = $_ENV['MYSQLPORT']     ?? '3306';
+
+$conn = new mysqli($host, $user, $password, $database, $port);
+
+
 if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 $conn->set_charset("utf8");
 
