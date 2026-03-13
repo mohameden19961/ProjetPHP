@@ -148,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
         case 'patient':
             // Insertion des données essentielles du patient liée à l'id_utilisateur
             $stmt_patient = $conn->prepare(
-                "INSERT INTO patient (id_utilisateur, nom, prenom, email, telephone) 
+                "INSERT INTO patient (id_patient, nom, prenom, email, telephone) 
                  VALUES (?, ?, ?, ?, ?)"
             );
             $stmt_patient->bind_param("issss", $new_user_id, $nom, $prenom, $email, $telephone);
