@@ -69,7 +69,7 @@ $ord_stmt->close();
 
 // Fetch patients for creating rendezvous, prescriptions, and dossiers
 $patients = $conn->query("
-    SELECT DISTINCT p.id_patient, CONCAT(p.prenom,' ',p.nom) AS nom_complet
+    SELECT DISTINCT p.id_patient, p.prenom, p.nom, CONCAT(p.prenom,' ',p.nom) AS nom_complet
     FROM traitement t
     JOIN patient p ON p.id_patient = t.id_patient
     WHERE t.id_medecin = $id_medecin
