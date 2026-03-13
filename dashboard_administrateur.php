@@ -19,7 +19,14 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Connexion à la base de données
-$conn = new mysqli("localhost", "root", "", "gestion_cabinet_medical");
+$host     = $_ENV['MYSQLHOST']     ?? 'localhost';
+$user     = $_ENV['MYSQLUSER']     ?? 'root';
+$password = $_ENV['MYSQLPASSWORD'] ?? 'DyYnWTGZpTsbOGIwiJDrwFizzgTKYGYn';
+$database = $_ENV['MYSQLDATABASE'] ?? 'gestion_cabinet_medical';
+$port     = $_ENV['MYSQLPORT']     ?? '3306';
+
+$conn = new mysqli($host, $user, $password, $database, $port);
+// $conn = new mysqli("", "root", "", "gestion_cabinet_medical");
 if ($conn->connect_error) {
     die("Erreur de connexion : " . $conn->connect_error);
 }
