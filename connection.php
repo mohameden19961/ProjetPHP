@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
             // On insère l'id_utilisateur pour lier ce médecin au compte principal
             // Note : id_medecin est omis car il est géré par AUTO_INCREMENT en base
             $stmt_medecin = $conn->prepare(
-                "INSERT INTO medecin (id_utilisateur, nom, prenom, spécialité, email, telephone) 
+                "INSERT INTO medecin (id_medecin, nom, prenom, spécialité, email, telephone) 
                  VALUES (?, ?, ?, ?, ?, ?)"
             );
             $stmt_medecin->bind_param("isssss", $new_user_id, $nom, $prenom, $specialite, $email, $telephone);
