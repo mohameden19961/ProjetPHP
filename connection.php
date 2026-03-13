@@ -114,74 +114,69 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
             // ... (le début de votre code reste inchangé)
 
             if ($stmt->execute()) {
-                $new_user_id = $stmt->insert_id;
+    // Récupérer l'ID unique généré automatiquement par MySQL pour cet utilisateur
+    $new_user_id = $stmt->insert_id;
 
-                // Créer le profil selon le rôle
-                switch ($role) {
-                    case 'medecin':
-                        // Récupérer la spécialité depuis le formulaire
-                        $specialite = sanitize_input($_POST['specialite_medecin'] ?? 'À définir');
+    // Créer le profil détaillé selon le rôle choisi
+    switch ($role) {
+        case 'medecin':
+            // Récupération de la spécialité (avec valeur par défaut si vide)
+            $specialite = sanitize_input($_POST['specialite_medecin'] ?? 'À définir');
 
-                        // Préparer la requête pour insérer dans la table `medecin`
-                        $stmt_medecin = $conn->prepare(
-                            "INSERT INTO medecin (id_medecin, nom, prenom, spécialité, email, telephone) 
+            // On insère l'id_utilisateur pour lier ce médecin au compte principal
+            // Note : id_medecin est omis car il est géré par AUTO_INCREMENT en base
+            $stmt_medecin = $conn->prepare(
+                "INSERT INTO medecin (id_utilisateur, nom, prenom, spécialité, email, telephone) 
                  VALUES (?, ?, ?, ?, ?, ?)"
-                        );
-                        $stmt_medecin->bind_param("isssss", $new_user_id, $nom, $prenom, $specialite, $email, $telephone);
-                        $stmt_medecin->execute();
-                        break;
+            );
+            $stmt_medecin->bind_param("isssss", $new_user_id, $nom, $prenom, $specialite, $email, $telephone);
+            $stmt_medecin->execute();
+            break;
 
-                    case 'assistant':
-                        $departement = sanitize_input($_POST['specialite_assistant'] ?? 'À définir');
-                        $stmt_assistant = $conn->prepare(
-                            "INSERT INTO assistant (id_assistant, departement) 
+        case 'assistant':
+            $departement = sanitize_input($_POST['specialite_assistant'] ?? 'À définir');
+            
+            // On lie l'assistant via son id_utilisateur
+            $stmt_assistant = $conn->prepare(
+                "INSERT INTO assistant (id_utilisateur, departement) 
                  VALUES (?, ?)"
-                        );
-                        $stmt_assistant->bind_param("is", $new_user_id, $departement);
-                        $stmt_assistant->execute();
-                        break;
+            );
+            $stmt_assistant->bind_param("is", $new_user_id, $departement);
+            $stmt_assistant->execute();
+            break;
 
-                    // ==================================================================
-                    // === BLOC AJOUTÉ POUR CORRIGER LE PROBLÈME ===
-                    // ==================================================================
-                    case 'patient':
-                        // Préparer la requête pour insérer les informations dans la table `patient`
-                        // Note : La table `patient` a des colonnes comme date_naissance, sexe, etc.
-                        // Comme elles ne sont pas dans le formulaire, on insère les données essentielles.
-                        $stmt_patient = $conn->prepare(
-                            "INSERT INTO patient (id_patient, nom, prenom, email, telephone) 
+        case 'patient':
+            // Insertion des données essentielles du patient liée à l'id_utilisateur
+            $stmt_patient = $conn->prepare(
+                "INSERT INTO patient (id_utilisateur, nom, prenom, email, telephone) 
                  VALUES (?, ?, ?, ?, ?)"
-                        );
-                        // Lier les 5 paramètres : l'ID, le nom, le prénom, l'email et le téléphone
-                        $stmt_patient->bind_param("issss", $new_user_id, $nom, $prenom, $email, $telephone);
+            );
+            $stmt_patient->bind_param("issss", $new_user_id, $nom, $prenom, $email, $telephone);
+            $stmt_patient->execute();
+            break;
+    }
 
-                        // Exécuter la requête pour la table `patient`
-                        $stmt_patient->execute();
-                        break;
-                        // ==================================================================
-                        // === FIN DU BLOC AJOUTÉ ===
-                        // ==================================================================
-                }
-
-                // Créer les informations de connexion
-                $stmt_connexion = $conn->prepare(
-                    "INSERT INTO connexion (id_utilisateur, login, mot_de_passe) 
+    // Créer l'entrée dans la table 'connexion' pour permettre l'authentification
+    $stmt_connexion = $conn->prepare(
+        "INSERT INTO connexion (id_utilisateur, login, mot_de_passe) 
          VALUES (?, ?, ?)"
-                );
-                // Note: Il est préférable d'utiliser password_hash pour la table connexion aussi.
-                // Mais pour rester cohérent avec votre code existant, j'utilise hash('sha256', ...).
-                $hashed_password_db = hash('sha256', $password);
-                $stmt_connexion->bind_param("iss", $new_user_id, $email, $hashed_password_db);
-                $stmt_connexion->execute();
+    );
+    
+    // Hachage du mot de passe pour la base de données
+    $hashed_password_db = hash('sha256', $password);
+    $stmt_connexion->bind_param("iss", $new_user_id, $email, $hashed_password_db);
+    $stmt_connexion->execute();
 
-                $_SESSION['swal'] = [
-                    'icon' => 'success',
-                    'title' => 'Succès',
-                    'text' => "Inscription réussie! Vous pouvez maintenant vous connecter"
-                ];
-                header("Location: connection.php");
-                exit();
-            } else {
+    // Configuration de l'alerte de succès et redirection
+    $_SESSION['swal'] = [
+        'icon' => 'success',
+        'title' => 'Succès',
+        'text' => "Inscription réussie ! Vous pouvez maintenant vous connecter."
+    ];
+    
+    header("Location: connection.php");
+    exit();
+}else {
                 $errors[] = "Erreur lors de l'inscription: " . $stmt->error;
             }
 
