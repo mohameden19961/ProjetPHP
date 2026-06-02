@@ -34,3 +34,21 @@ function getAlert(): ?array {
     }
     return null;
 }
+
+function requireApiAuth(): void {
+    securite_startSession();
+    if (!securite_isAuthenticated()) {
+        http_response_code(401);
+        echo json_encode(['error' => 'Authentification requise']);
+        exit;
+    }
+}
+
+function requireApiRole(array $roles): void {
+    requireApiAuth();
+    if (!in_array($_SESSION['role'] ?? '', $roles)) {
+        http_response_code(403);
+        echo json_encode(['error' => 'Accès interdit. Rôle requis: ' . implode(', ', $roles)]);
+        exit;
+    }
+}

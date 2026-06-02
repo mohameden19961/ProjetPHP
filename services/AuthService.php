@@ -65,6 +65,6 @@ function authService_login(string $email, string $password): ?array {
     $stmt->bind_param("ss", $email, $hashed);
     $stmt->execute();
     $result = $stmt->get_result();
-    if ($result->num_rows === 1) return $result->fetch_assoc();
+    if ($result->num_rows >= 1) return $result->fetch_assoc();
     return null;
 }

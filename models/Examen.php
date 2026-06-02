@@ -44,3 +44,32 @@ function examen_getAll(): array {
     ");
     return $result->fetch_all(MYSQLI_ASSOC);
 }
+
+function examen_findById(int $id): ?array {
+    $conn = getDbConnection();
+    $stmt = $conn->prepare("SELECT e.*, p.nom AS patient_nom, p.prenom AS patient_prenom, m.nom AS medecin_nom, m.prenom AS medecin_prenom FROM examen e JOIN traitement t ON e.id_traitement = t.id_traitement JOIN patient p ON t.id_patient = p.id_patient JOIN medecin m ON t.id_medecin = m.id_medecin WHERE e.id_examen = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $examen = $result->fetch_assoc();
+    $stmt->close();
+    return $examen ?: null;
+}
+
+function examen_update(int $id, string $typeExamen, string $resultat): bool {
+    $conn = getDbConnection();
+    $stmt = $conn->prepare("UPDATE examen SET type_examen = ?, résultat = ? WHERE id_examen = ?");
+    $stmt->bind_param("ssi", $typeExamen, $resultat, $id);
+    $success = $stmt->execute();
+    $stmt->close();
+    return $success;
+}
+
+function examen_delete(int $id): bool {
+    $conn = getDbConnection();
+    $stmt = $conn->prepare("DELETE FROM examen WHERE id_examen = ?");
+    $stmt->bind_param("i", $id);
+    $success = $stmt->execute();
+    $stmt->close();
+    return $success;
+}

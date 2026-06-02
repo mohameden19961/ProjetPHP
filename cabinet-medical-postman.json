@@ -1,0 +1,1004 @@
+{
+  "info": {
+    "name": "Cabinet Médical API",
+    "description": "API RESTful pour la gestion de cabinet médical. Authentification par session PHP (PHPSESSID).\n\nPUT et DELETE s'utilisent via POST avec le champ _method=PUT ou _method=DELETE.\n\nRôles: admin, medecin, assistant, patient\n\n💡 Authentification automatique : le Pre-request Script connecte l'admin avant chaque appel API (/api/*). Pour tester avec un autre rôle, exécute d'abord la requête Login correspondante (les cookies remplaceront la session admin).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "noauth"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "exec": [
+          "// Connexion automatique uniquement pour les appels /api/",
+          "const url = pm.request.url.toString();",
+          "if (!url.includes('/api/')) return;",
+          "",
+          "const loginUrl = pm.variables.get('base_url') + '/connection.php';",
+          "const loginBody = 'login=1&email=24068@supnum.mr&password=admin123';",
+          "",
+          "pm.sendRequest({",
+          "    url: loginUrl,",
+          "    method: 'POST',",
+          "    header: { 'Content-Type': 'application/x-www-form-urlencoded' },",
+          "    body: { mode: 'urlencoded', urlencoded: [",
+          "        { key: 'login', value: '1' },",
+          "        { key: 'email', value: '24068@supnum.mr' },",
+          "        { key: 'password', value: 'admin123' }",
+          "    ]}",
+          "}, (err, res) => {",
+          "    if (err) console.log('Login auto error:', err);",
+          "});"
+        ],
+        "type": "text/javascript"
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "🔐 Authentification",
+      "item": [
+        {
+          "name": "Login Admin",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "login", "value": "1", "type": "text" },
+                { "key": "email", "value": "24068@supnum.mr", "type": "text" },
+                { "key": "password", "value": "admin123", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/connection.php",
+              "host": ["{{base_url}}"],
+              "path": ["connection.php"]
+            }
+          }
+        },
+        {
+          "name": "Login Médecin",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "login", "value": "1", "type": "text" },
+                { "key": "email", "value": "test.doctor@gmail.com", "type": "text" },
+                { "key": "password", "value": "medecin123", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/connection.php",
+              "host": ["{{base_url}}"],
+              "path": ["connection.php"]
+            }
+          }
+        },
+        {
+          "name": "Login Patient",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "login", "value": "1", "type": "text" },
+                { "key": "email", "value": "login_pat1", "type": "text" },
+                { "key": "password", "value": "patient123", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/connection.php",
+              "host": ["{{base_url}}"],
+              "path": ["connection.php"]
+            }
+          }
+        },
+        {
+          "name": "Login Assistant",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "login", "value": "1", "type": "text" },
+                { "key": "email", "value": "test.assistant@gmail.com", "type": "text" },
+                { "key": "password", "value": "assistant123", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/connection.php",
+              "host": ["{{base_url}}"],
+              "path": ["connection.php"]
+            }
+          }
+        },
+        {
+          "name": "Inscription Patient",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "register", "value": "1", "type": "text" },
+                { "key": "prenom", "value": "Jean", "type": "text" },
+                { "key": "nom", "value": "Dupont", "type": "text" },
+                { "key": "email", "value": "jean.dupont@email.com", "type": "text" },
+                { "key": "telephone", "value": "0612345678", "type": "text" },
+                { "key": "password", "value": "password123", "type": "text" },
+                { "key": "confirm_password", "value": "password123", "type": "text" },
+                { "key": "role", "value": "patient", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/connection.php",
+              "host": ["{{base_url}}"],
+              "path": ["connection.php"]
+            }
+          }
+        },
+        {
+          "name": "Inscription Médecin",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "register", "value": "1", "type": "text" },
+                { "key": "prenom", "value": "Paul", "type": "text" },
+                { "key": "nom", "value": "Martin", "type": "text" },
+                { "key": "email", "value": "paul.martin@email.com", "type": "text" },
+                { "key": "telephone", "value": "0612345679", "type": "text" },
+                { "key": "password", "value": "password123", "type": "text" },
+                { "key": "confirm_password", "value": "password123", "type": "text" },
+                { "key": "role", "value": "medecin", "type": "text" },
+                { "key": "auth_code", "value": "medecin456", "type": "text" },
+                { "key": "specialite_medecin", "value": "Cardiologie", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/connection.php",
+              "host": ["{{base_url}}"],
+              "path": ["connection.php"]
+            }
+          }
+        },
+        {
+          "name": "Déconnexion",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/deconnexion.php",
+              "host": ["{{base_url}}"],
+              "path": ["deconnexion.php"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👥 Patients",
+      "item": [
+        {
+          "name": "Lister tous les patients",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/patients.php",
+              "host": ["{{base_url}}"],
+              "path": ["api", "patients.php"]
+            }
+          }
+        },
+        {
+          "name": "Voir un patient",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/patients.php?id=7",
+              "host": ["{{base_url}}"],
+              "path": ["api", "patients.php"],
+              "query": [{ "key": "id", "value": "7" }]
+            }
+          }
+        },
+        {
+          "name": "Créer un patient",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "nom", "value": "Dupont", "type": "text" },
+                { "key": "prenom", "value": "Marie", "type": "text" },
+                { "key": "email", "value": "marie.dupont@email.com", "type": "text" },
+                { "key": "telephone", "value": "0611111111", "type": "text" },
+                { "key": "date_naissance", "value": "1990-05-15", "type": "text" },
+                { "key": "adresse", "value": "12 Rue de Paris", "type": "text" },
+                { "key": "dossier_medical", "value": "Aucun antécédent", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/patients.php",
+              "host": ["{{base_url}}"],
+              "path": ["api", "patients.php"]
+            }
+          }
+        },
+        {
+          "name": "Modifier un patient",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "_method", "value": "PUT", "type": "text" },
+                { "key": "nom", "value": "DupontModifié", "type": "text" },
+                { "key": "prenom", "value": "Marie", "type": "text" },
+                { "key": "telephone", "value": "0622222222", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/patients.php?id=1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "patients.php"],
+              "query": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Supprimer un patient",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "_method", "value": "DELETE", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/patients.php?id=1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "patients.php"],
+              "query": [{ "key": "id", "value": "1" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👨‍⚕️ Médecins",
+      "item": [
+        {
+          "name": "Lister tous les médecins",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/medecins.php",
+              "host": ["{{base_url}}"],
+              "path": ["api", "medecins.php"]
+            }
+          }
+        },
+        {
+          "name": "Voir un médecin",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/medecins.php?id=31",
+              "host": ["{{base_url}}"],
+              "path": ["api", "medecins.php"],
+              "query": [{ "key": "id", "value": "31" }]
+            }
+          }
+        },
+        {
+          "name": "Créer un médecin",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "id_utilisateur", "value": "100", "type": "text" },
+                { "key": "nom", "value": "Martin", "type": "text" },
+                { "key": "prenom", "value": "Paul", "type": "text" },
+                { "key": "specialite", "value": "Cardiologie", "type": "text" },
+                { "key": "email", "value": "paul.martin@cabinet.com", "type": "text" },
+                { "key": "telephone", "value": "0612345678", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/medecins.php",
+              "host": ["{{base_url}}"],
+              "path": ["api", "medecins.php"]
+            }
+          }
+        },
+        {
+          "name": "Modifier un médecin",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "_method", "value": "PUT", "type": "text" },
+                { "key": "specialite", "value": "Neurologie", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/medecins.php?id=31",
+              "host": ["{{base_url}}"],
+              "path": ["api", "medecins.php"],
+              "query": [{ "key": "id", "value": "31" }]
+            }
+          }
+        },
+        {
+          "name": "Supprimer un médecin",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "_method", "value": "DELETE", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/medecins.php?id=100",
+              "host": ["{{base_url}}"],
+              "path": ["api", "medecins.php"],
+              "query": [{ "key": "id", "value": "100" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🧑‍⚕️ Assistants",
+      "item": [
+        {
+          "name": "Lister tous les assistants",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/assistants.php",
+              "host": ["{{base_url}}"],
+              "path": ["api", "assistants.php"]
+            }
+          }
+        },
+        {
+          "name": "Voir un assistant",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/assistants.php?id=32",
+              "host": ["{{base_url}}"],
+              "path": ["api", "assistants.php"],
+              "query": [{ "key": "id", "value": "32" }]
+            }
+          }
+        },
+        {
+          "name": "Créer un assistant",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "id_utilisateur", "value": "101", "type": "text" },
+                { "key": "departement", "value": "Urgences", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/assistants.php",
+              "host": ["{{base_url}}"],
+              "path": ["api", "assistants.php"]
+            }
+          }
+        },
+        {
+          "name": "Modifier un assistant",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "_method", "value": "PUT", "type": "text" },
+                { "key": "departement", "value": "Pédiatrie", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/assistants.php?id=32",
+              "host": ["{{base_url}}"],
+              "path": ["api", "assistants.php"],
+              "query": [{ "key": "id", "value": "32" }]
+            }
+          }
+        },
+        {
+          "name": "Supprimer un assistant",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "_method", "value": "DELETE", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/assistants.php?id=101",
+              "host": ["{{base_url}}"],
+              "path": ["api", "assistants.php"],
+              "query": [{ "key": "id", "value": "101" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📅 Rendez-vous",
+      "item": [
+        {
+          "name": "Lister tous les rendez-vous",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/rendezvous.php",
+              "host": ["{{base_url}}"],
+              "path": ["api", "rendezvous.php"]
+            }
+          }
+        },
+        {
+          "name": "Voir un rendez-vous",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/rendezvous.php?id=1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "rendezvous.php"],
+              "query": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Créer un rendez-vous",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "patient_id", "value": "61", "type": "text" },
+                { "key": "medecin_id", "value": "31", "type": "text" },
+                { "key": "date_rdv", "value": "2026-06-15", "type": "text" },
+                { "key": "heure", "value": "10:00", "type": "text" },
+                { "key": "motif", "value": "Consultation générale", "type": "text" },
+                { "key": "lieu", "value": "Cabinet A", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/rendezvous.php",
+              "host": ["{{base_url}}"],
+              "path": ["api", "rendezvous.php"]
+            }
+          }
+        },
+        {
+          "name": "Modifier un rendez-vous",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "_method", "value": "PUT", "type": "text" },
+                { "key": "date_rdv", "value": "2026-06-20", "type": "text" },
+                { "key": "heure", "value": "14:30", "type": "text" },
+                { "key": "motif", "value": "Consultation modifiée", "type": "text" },
+                { "key": "lieu", "value": "Cabinet B", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/rendezvous.php?id=1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "rendezvous.php"],
+              "query": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Annuler un rendez-vous",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "_method", "value": "DELETE", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/rendezvous.php?id=1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "rendezvous.php"],
+              "query": [{ "key": "id", "value": "1" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "💊 Ordonnances",
+      "item": [
+        {
+          "name": "Lister toutes les ordonnances",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/ordonnances.php",
+              "host": ["{{base_url}}"],
+              "path": ["api", "ordonnances.php"]
+            }
+          }
+        },
+        {
+          "name": "Voir une ordonnance",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/ordonnances.php?id=1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "ordonnances.php"],
+              "query": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Créer une ordonnance",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "patient_id", "value": "61", "type": "text" },
+                { "key": "medecin_id", "value": "31", "type": "text" },
+                { "key": "medicaments", "value": "Paracétamol 500mg - 1 comprimé 3x/jour\nAmoxicilline 1g - 1 comprimé 2x/jour", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/ordonnances.php",
+              "host": ["{{base_url}}"],
+              "path": ["api", "ordonnances.php"]
+            }
+          }
+        },
+        {
+          "name": "Modifier une ordonnance",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "_method", "value": "PUT", "type": "text" },
+                { "key": "medicaments", "value": "Doliprane 1000mg - 1 comprimé 3x/jour", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/ordonnances.php?id=1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "ordonnances.php"],
+              "query": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Supprimer une ordonnance",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "_method", "value": "DELETE", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/ordonnances.php?id=1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "ordonnances.php"],
+              "query": [{ "key": "id", "value": "1" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔬 Examens",
+      "item": [
+        {
+          "name": "Lister tous les examens",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/examens.php",
+              "host": ["{{base_url}}"],
+              "path": ["api", "examens.php"]
+            }
+          }
+        },
+        {
+          "name": "Voir un examen",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/examens.php?id=1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "examens.php"],
+              "query": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Créer un examen",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "patient_id", "value": "61", "type": "text" },
+                { "key": "medecin_id", "value": "31", "type": "text" },
+                { "key": "type_examen", "value": "Prise de sang", "type": "text" },
+                { "key": "resultat", "value": "Résultats normaux - globules rouges: 5.2M/µL", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/examens.php",
+              "host": ["{{base_url}}"],
+              "path": ["api", "examens.php"]
+            }
+          }
+        },
+        {
+          "name": "Modifier un examen",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "_method", "value": "PUT", "type": "text" },
+                { "key": "type_examen", "value": "Radio pulmonaire", "type": "text" },
+                { "key": "resultat", "value": "Pas d'anomalie détectée", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/examens.php?id=1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "examens.php"],
+              "query": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Supprimer un examen",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "_method", "value": "DELETE", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/examens.php?id=1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "examens.php"],
+              "query": [{ "key": "id", "value": "1" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏥 Hospitalisations",
+      "item": [
+        {
+          "name": "Lister les hospitalisations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/hospitalisations.php",
+              "host": ["{{base_url}}"],
+              "path": ["api", "hospitalisations.php"]
+            }
+          }
+        },
+        {
+          "name": "Voir une hospitalisation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/hospitalisations.php?id=1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "hospitalisations.php"],
+              "query": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Créer une hospitalisation",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "patient_id", "value": "61", "type": "text" },
+                { "key": "medecin_id", "value": "31", "type": "text" },
+                { "key": "date_admission", "value": "2026-06-01", "type": "text" },
+                { "key": "motif", "value": "Observation post-opératoire", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/hospitalisations.php",
+              "host": ["{{base_url}}"],
+              "path": ["api", "hospitalisations.php"]
+            }
+          }
+        },
+        {
+          "name": "Modifier une hospitalisation",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "_method", "value": "PUT", "type": "text" },
+                { "key": "date_entree", "value": "2026-06-01", "type": "text" },
+                { "key": "date_sortie", "value": "2026-06-05", "type": "text" },
+                { "key": "motif", "value": "Sortie anticipée", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/hospitalisations.php?id=1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "hospitalisations.php"],
+              "query": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Supprimer une hospitalisation",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "_method", "value": "DELETE", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/hospitalisations.php?id=1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "hospitalisations.php"],
+              "query": [{ "key": "id", "value": "1" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👤 Utilisateurs",
+      "item": [
+        {
+          "name": "Lister tous les utilisateurs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/utilisateurs.php",
+              "host": ["{{base_url}}"],
+              "path": ["api", "utilisateurs.php"]
+            }
+          }
+        },
+        {
+          "name": "Lister les médecins (par rôle)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/utilisateurs.php?role=medecin",
+              "host": ["{{base_url}}"],
+              "path": ["api", "utilisateurs.php"],
+              "query": [{ "key": "role", "value": "medecin" }]
+            }
+          }
+        },
+        {
+          "name": "Voir un utilisateur",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/utilisateurs.php?id=43",
+              "host": ["{{base_url}}"],
+              "path": ["api", "utilisateurs.php"],
+              "query": [{ "key": "id", "value": "43" }]
+            }
+          }
+        },
+        {
+          "name": "Créer un utilisateur",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "nom", "value": "Test", "type": "text" },
+                { "key": "prenom", "value": "User", "type": "text" },
+                { "key": "email", "value": "test.user@cabinet.com", "type": "text" },
+                { "key": "telephone", "value": "0600000000", "type": "text" },
+                { "key": "rôle", "value": "patient", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/utilisateurs.php",
+              "host": ["{{base_url}}"],
+              "path": ["api", "utilisateurs.php"]
+            }
+          }
+        },
+        {
+          "name": "Modifier un utilisateur",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "_method", "value": "PUT", "type": "text" },
+                { "key": "nom", "value": "TestModifié", "type": "text" },
+                { "key": "telephone", "value": "0699999999", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/utilisateurs.php?id=1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "utilisateurs.php"],
+              "query": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Supprimer un utilisateur",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "_method", "value": "DELETE", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/utilisateurs.php?id=1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "utilisateurs.php"],
+              "query": [{ "key": "id", "value": "1" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "⛔ Tests d'erreur",
+      "item": [
+        {
+          "name": "401 - Non authentifié",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/patients.php",
+              "host": ["{{base_url}}"],
+              "path": ["api", "patients.php"]
+            }
+          }
+        },
+        {
+          "name": "403 - Accès refusé (patient sur /api/medecins)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/medecins.php",
+              "host": ["{{base_url}}"],
+              "path": ["api", "medecins.php"]
+            }
+          }
+        },
+        {
+          "name": "404 - Ressource introuvable",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/patients.php?id=99999",
+              "host": ["{{base_url}}"],
+              "path": ["api", "patients.php"],
+              "query": [{ "key": "id", "value": "99999" }]
+            }
+          }
+        },
+        {
+          "name": "405 - Méthode non autorisée",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "_method", "value": "PATCH", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/patients.php",
+              "host": ["{{base_url}}"],
+              "path": ["api", "patients.php"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8070",
+      "type": "string"
+    }
+  ]
+}

@@ -68,3 +68,32 @@ function ordonnance_countRecent(): int {
     $result = $conn->query("SELECT COUNT(*) as total FROM ordonnance WHERE date_ordonnance >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)");
     return $result->fetch_assoc()['total'];
 }
+
+function ordonnance_findById(int $id): ?array {
+    $conn = getDbConnection();
+    $stmt = $conn->prepare("SELECT o.*, p.nom AS patient_nom, p.prenom AS patient_prenom, m.nom AS medecin_nom, m.prenom AS medecin_prenom FROM ordonnance o JOIN traitement t ON o.id_traitement = t.id_traitement JOIN patient p ON t.id_patient = p.id_patient JOIN medecin m ON t.id_medecin = m.id_medecin WHERE o.id_ordonnance = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $ordonnance = $result->fetch_assoc();
+    $stmt->close();
+    return $ordonnance ?: null;
+}
+
+function ordonnance_update(int $id, string $medicaments): bool {
+    $conn = getDbConnection();
+    $stmt = $conn->prepare("UPDATE ordonnance SET médicaments = ? WHERE id_ordonnance = ?");
+    $stmt->bind_param("si", $medicaments, $id);
+    $success = $stmt->execute();
+    $stmt->close();
+    return $success;
+}
+
+function ordonnance_delete(int $id): bool {
+    $conn = getDbConnection();
+    $stmt = $conn->prepare("DELETE FROM ordonnance WHERE id_ordonnance = ?");
+    $stmt->bind_param("i", $id);
+    $success = $stmt->execute();
+    $stmt->close();
+    return $success;
+}

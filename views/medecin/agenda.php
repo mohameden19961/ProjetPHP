@@ -1,7 +1,7 @@
 <h2 class="section-title"><i class="fas fa-calendar-check"></i>Agenda</h2>
 <div class="card">
     <div class="card-body">
-        <?php if (count($rendezvousList) > 0): ?>
+        <?php if (count($rendezvous) > 0): ?>
         <div class="table-container">
             <table class="table">
                 <thead>
@@ -16,7 +16,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($rendezvousList as $rdv): ?>
+                    <?php foreach ($rendezvous as $rdv): ?>
                     <tr>
                         <td><?= htmlspecialchars($rdv['date_rdv']) ?></td>
                         <td><?= htmlspecialchars($rdv['heure'] ?? '-') ?></td>

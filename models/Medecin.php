@@ -53,3 +53,37 @@ function medecin_delete(int $id): bool {
     $stmt->close();
     return $success;
 }
+
+function medecin_findByEmail(string $email): ?array {
+    $conn = getDbConnection();
+    $stmt = $conn->prepare("SELECT m.*, u.nom, u.prenom FROM medecin m JOIN utilisateur u ON m.id_medecin = u.id_utilisateur WHERE u.email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $medecin = $result->fetch_assoc();
+    $stmt->close();
+    return $medecin ?: null;
+}
+
+function medecin_update(int $id, array $data): bool {
+    $conn = getDbConnection();
+    $fields = [];
+    $types = "";
+    $values = [];
+    foreach (['nom', 'prenom', 'spécialité', 'email', 'téléphone'] as $field) {
+        if (isset($data[$field])) {
+            $fields[] = "$field = ?";
+            $types .= "s";
+            $values[] = $data[$field];
+        }
+    }
+    if (empty($fields)) return false;
+    $types .= "i";
+    $values[] = $id;
+    $sql = "UPDATE medecin SET " . implode(", ", $fields) . " WHERE id_medecin = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param($types, ...$values);
+    $success = $stmt->execute();
+    $stmt->close();
+    return $success;
+}

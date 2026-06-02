@@ -7,6 +7,7 @@ require_once __DIR__ . '/../models/Ordonnance.php';
 require_once __DIR__ . '/../models/Examen.php';
 require_once __DIR__ . '/../models/Hospitalisation.php';
 require_once __DIR__ . '/../models/Traitement.php';
+require_once __DIR__ . '/../models/Medecin.php';
 
 function patientService_getInfo(int $idPatient): ?array {
     return patient_findById($idPatient);
