@@ -5,12 +5,27 @@ require_once __DIR__ . '/../securite/Sanitizer.php';
 function getDbConnection(): mysqli {
     static $conn = null;
     if ($conn === null) {
-        $host     = $_ENV['MYSQLHOST']     ?? 'localhost';
-        $user     = $_ENV['MYSQLUSER']     ?? 'supnum';
-        $password = $_ENV['MYSQLPASSWORD'] ?? 'Supnum';
-        $database = $_ENV['MYSQLDATABASE'] ?? 'gestion_cabinet_medical';
+        $dotenvPath = __DIR__ . '/../.env';
+        if (file_exists($dotenvPath)) {
+            $lines = file($dotenvPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            foreach ($lines as $line) {
+                if (str_starts_with(trim($line), '#')) continue;
+                [$key, $value] = explode('=', $line, 2);
+                $_ENV[trim($key)] = trim($value);
+            }
+        }
+
+        $host     = $_ENV['MYSQLHOST']     ?? '';
+        $user     = $_ENV['MYSQLUSER']     ?? '';
+        $password = $_ENV['MYSQLPASSWORD'] ?? '';
+        $database = $_ENV['MYSQLDATABASE'] ?? '';
         $port     = $_ENV['MYSQLPORT']     ?? '3306';
-        $conn = new mysqli($host, $user, $password, $database, $port);
+
+        if (!$host || !$user || !$database) {
+            die("Erreur : Fichier .env manquant ou incomplet. Copiez .env.example en .env et configurez vos accès MySQL.");
+        }
+
+        $conn = new mysqli($host, $user, $password, $database, (int)$port);
         if ($conn->connect_error) {
             die("Erreur de connexion : " . $conn->connect_error);
         }

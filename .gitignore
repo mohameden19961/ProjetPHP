@@ -1,7 +1,5 @@
-# Sensitive data
+# Environment (credentials)
 .env
-.env.local
-*.key
 
 # Uploaded files (profile photos, exam files)
 uploads/
