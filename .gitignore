@@ -1,4 +1,30 @@
-uploads.zip
-uploadsExamen.zip
-profile_43_1751954393.jpg
+# Sensitive data
+.env
+.env.local
+*.key
+
+# Uploaded files (profile photos, exam files)
+uploads/
+
+# Database exports
+*.sql
 *.zip
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# Logs
+*.log
+
+# Personal images
+public/assets/images/profile_*.jpg
+public/assets/images/img.jpg
+public/assets/images/images.jpeg

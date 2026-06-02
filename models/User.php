@@ -1,0 +1,77 @@
+<?php
+
+require_once __DIR__ . '/../config/database.php';
+
+function user_findByEmail(string $email): ?array {
+    $conn = getDbConnection();
+    $stmt = $conn->prepare("SELECT * FROM utilisateur WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
+    $stmt->close();
+    return $user ?: null;
+}
+
+function user_create(array $data): int {
+    $conn = getDbConnection();
+    $stmt = $conn->prepare("INSERT INTO utilisateur (nom, prenom, email, telephone, rôle) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssss", $data['nom'], $data['prenom'], $data['email'], $data['telephone'], $data['role']);
+    $stmt->execute();
+    $id = $stmt->insert_id;
+    $stmt->close();
+    return $id;
+}
+
+function user_findById(int $id): ?array {
+    $conn = getDbConnection();
+    $stmt = $conn->prepare("SELECT * FROM utilisateur WHERE id_utilisateur = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
+    $stmt->close();
+    return $user ?: null;
+}
+
+function user_findAllByRole(string $role): array {
+    $conn = getDbConnection();
+    $stmt = $conn->prepare("SELECT * FROM utilisateur WHERE rôle = ? ORDER BY nom, prenom");
+    $stmt->bind_param("s", $role);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $users = $result->fetch_all(MYSQLI_ASSOC);
+    $stmt->close();
+    return $users;
+}
+
+function user_countByRole(string $role): int {
+    $conn = getDbConnection();
+    $stmt = $conn->prepare("SELECT COUNT(*) as total FROM utilisateur WHERE rôle = ?");
+    $stmt->bind_param("s", $role);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+    return $result['total'];
+}
+
+function user_search(string $query): array {
+    $conn = getDbConnection();
+    $search = "%$query%";
+    $stmt = $conn->prepare("SELECT * FROM utilisateur WHERE nom LIKE ? OR prenom LIKE ? OR email LIKE ? ORDER BY nom, prenom");
+    $stmt->bind_param("sss", $search, $search, $search);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $users = $result->fetch_all(MYSQLI_ASSOC);
+    $stmt->close();
+    return $users;
+}
+
+function user_delete(int $id): bool {
+    $conn = getDbConnection();
+    $stmt = $conn->prepare("DELETE FROM utilisateur WHERE id_utilisateur = ?");
+    $stmt->bind_param("i", $id);
+    $success = $stmt->execute();
+    $stmt->close();
+    return $success;
+}

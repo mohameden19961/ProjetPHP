@@ -1,0 +1,77 @@
+<?php
+
+require_once __DIR__ . '/../config/app.php';
+require_once __DIR__ . '/../models/Medecin.php';
+require_once __DIR__ . '/../models/Patient.php';
+require_once __DIR__ . '/../models/Rendezvous.php';
+require_once __DIR__ . '/../models/Ordonnance.php';
+require_once __DIR__ . '/../models/Traitement.php';
+
+function medecinService_getInfo(int $idMedecin): ?array {
+    return medecin_findById($idMedecin);
+}
+
+function medecinService_getRendezvous(int $idMedecin): array {
+    return rdv_getUpcomingForMedecin($idMedecin);
+}
+
+function medecinService_getOrdonnances(int $idMedecin): array {
+    return ordonnance_getForMedecin($idMedecin);
+}
+
+function medecinService_getPatientById(int $id): ?array {
+    return patient_findById($id);
+}
+
+function medecinService_getRdvById(int $id): ?array {
+    return rdv_findById($id);
+}
+
+function medecinService_getPatients(int $idMedecin): array {
+    return medecin_getPatients($idMedecin);
+}
+
+function medecinService_deletePatient(int $id): void {
+    $conn = getDbConnection();
+    $conn->query("DELETE FROM patient WHERE id_patient = $id");
+}
+
+function medecinService_updatePatient(int $id, array $data): void {
+    patient_update($id, [
+        'nom' => sanitize($data['nom'] ?? ''),
+        'prenom' => sanitize($data['prenom'] ?? ''),
+        'telephone' => sanitize($data['telephone'] ?? ''),
+        'email' => sanitize($data['email'] ?? ''),
+        'adresse' => sanitize($data['adresse'] ?? ''),
+        'dossier_medical' => sanitize($data['dossier_medical'] ?? '')
+    ]);
+}
+
+function medecinService_createRdv(int $medecinId, array $data): void {
+    $patientId = (int)($data['patient_id'] ?? 0);
+    $idTraitement = traitement_findOrCreate($patientId, $medecinId);
+    rdv_create($idTraitement, $data['date_rdv'], $data['heure'], sanitize($data['lieu'] ?? 'Clinique'), sanitize($data['motif'] ?? ''));
+}
+
+function medecinService_createOrdonnance(int $medecinId, array $data): void {
+    $patientId = (int)($data['patient_id'] ?? 0);
+    $idTraitement = traitement_findOrCreate($patientId, $medecinId);
+    ordonnance_create($idTraitement, sanitize($data['medicaments'] ?? ''));
+}
+
+function medecinService_deleteOrdonnance(int $id): void {
+    $conn = getDbConnection();
+    $conn->query("DELETE FROM ordonnance WHERE id_ordonnance = $id");
+}
+
+function medecinService_confirmRdv(int $id): void {
+    rdv_updateStatus($id, 'confirme');
+}
+
+function medecinService_cancelRdv(int $id): void {
+    rdv_updateStatus($id, 'annule');
+}
+
+function medecinService_updateRdv(int $id, array $data): void {
+    rdv_update($id, $data['date_rdv'] ?? '', $data['heure'] ?? '', sanitize($data['lieu'] ?? ''), sanitize($data['motif'] ?? ''));
+}
