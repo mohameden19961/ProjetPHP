@@ -8,6 +8,10 @@ uploads/
 *.sql
 *.zip
 
+# But keep schema and seed under database/
+!database/schema.sql
+!database/seed.sql
+
 # OS files
 .DS_Store
 Thumbs.db
