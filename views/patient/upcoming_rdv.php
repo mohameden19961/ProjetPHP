@@ -1,9 +1,9 @@
-<h2 class="section-title"><i class="fas fa-calendar-check me-2"></i>Mes Rendez-vous</h2>
+<h2 class="page-title"><i class="fas fa-calendar-check"></i>Mes Rendez-vous</h2>
 <div class="card">
     <div class="card-body">
         <?php if (count($upcomingRendezvous) > 0): ?>
-        <div class="table-responsive">
-            <table class="table table-hover">
+        <div class="table-container">
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Date</th>
@@ -23,7 +23,7 @@
                         <td><?= htmlspecialchars($rdv['motif'] ?? '-') ?></td>
                         <td><?= htmlspecialchars($rdv['lieu'] ?? '-') ?></td>
                         <td>
-                            <span class="badge bg-<?= $rdv['statut'] === 'confirme' ? 'success' : ($rdv['statut'] === 'annule' ? 'danger' : 'warning') ?>">
+                            <span class="badge badge-<?= $rdv['statut'] === 'confirme' ? 'confirme' : ($rdv['statut'] === 'annule' ? 'annule' : 'en_attente') ?>">
                                 <?= htmlspecialchars($rdv['statut'] ?? 'en_attente') ?>
                             </span>
                         </td>

@@ -21,8 +21,7 @@
 }
 .navbar-brand:hover { color: var(--primary-dark); }
 .navbar-brand-icon {
-  width: 36px;
-  height: 36px;
+  width: 36px; height: 36px;
   background: linear-gradient(135deg, var(--primary), #6366f1);
   border-radius: var(--radius);
   display: flex;
@@ -83,6 +82,7 @@
   border-radius: var(--radius);
   cursor: pointer;
   transition: all 0.2s;
+  font-family: var(--font);
 }
 .btn-logout:hover {
   color: var(--danger);

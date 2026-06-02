@@ -1,22 +1,24 @@
-<h2 class="section-title"><i class="fas fa-user-injured me-2"></i>Gestion des Patients</h2>
-<div class="card mb-4">
+<div class="page-header fade-in">
+    <h1 class="page-title"><i class="fas fa-user-injured"></i>Gestion des Patients</h1>
+</div>
+<div class="card mb-4 fade-in">
     <div class="card-body">
-        <form method="GET" class="row g-3 align-items-end">
+        <form method="GET" class="form-row align-center">
             <input type="hidden" name="view" value="patients">
-            <div class="col-md-8">
+            <div class="form-group mb-0">
                 <label class="form-label">Rechercher un patient</label>
                 <input type="text" name="search" class="form-control" placeholder="Nom, prénom ou email..." value="<?= htmlspecialchars($search) ?>">
             </div>
-            <div class="col-md-4">
-                <button type="submit" class="btn btn-primary w-100"><i class="fas fa-search me-1"></i>Rechercher</button>
+            <div class="form-group mb-0">
+                <button type="submit" class="btn btn-primary w-100"><i class="fas fa-search"></i>Rechercher</button>
             </div>
         </form>
     </div>
 </div>
-<div class="card">
+<div class="card fade-in">
     <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover">
+        <div class="table-container">
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Nom</th>
@@ -34,7 +36,7 @@
                         <td><?= htmlspecialchars($u['email']) ?></td>
                         <td><?= htmlspecialchars($u['telephone'] ?? '-') ?></td>
                         <td>
-                            <a href="?view=user_details&id=<?= $u['id_utilisateur'] ?>" class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></a>
+                            <a href="?view=user_details&id=<?= $u['id_utilisateur'] ?>" class="btn btn-sm btn-outline"><i class="fas fa-eye"></i></a>
                         </td>
                     </tr>
                     <?php endforeach; ?>

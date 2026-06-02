@@ -21,10 +21,10 @@
         </aside>
         <main class="main-content">
             <?php if ($success): ?>
-            <div class="alert alert-success alert-dismissible fade show"><?= htmlspecialchars($success) ?><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+            <div class="alert-custom alert-success"><i class="fas fa-check-circle"></i> <?= htmlspecialchars($success) ?></div>
             <?php endif; ?>
             <?php if ($error): ?>
-            <div class="alert alert-danger alert-dismissible fade show"><?= htmlspecialchars($error) ?><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+            <div class="alert-custom alert-danger"><i class="fas fa-exclamation-triangle"></i> <?= htmlspecialchars($error) ?></div>
             <?php endif; ?>
             <?php
             $actionMap = [
@@ -44,6 +44,7 @@
             ?>
         </main>
     </div>
+    <script src="assets/js/assistant.js"></script>
     <?php require __DIR__ . '/../shared/scripts.php'; ?>
 </body>
 </html>

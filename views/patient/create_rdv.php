@@ -1,12 +1,12 @@
-<h2 class="section-title"><i class="fas fa-calendar-plus me-2"></i>Nouveau Rendez-vous</h2>
+<h2 class="page-title"><i class="fas fa-calendar-plus"></i>Nouveau Rendez-vous</h2>
 <div class="card">
     <div class="card-body">
         <form method="POST">
             <input type="hidden" name="creer_rdv" value="1">
-            <div class="row g-3">
-                <div class="col-md-6">
+            <div class="d-flex gap-3">
+                <div class="form-group" style="flex:2">
                     <label class="form-label">Médecin</label>
-                    <select name="medecin_id" class="form-select" required>
+                    <select name="medecin_id" class="form-control" required>
                         <option value="">Sélectionner...</option>
                         <?php
                         $allMedecins = medecin_getAll();
@@ -15,22 +15,20 @@
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="form-group" style="flex:1">
                     <label class="form-label">Date</label>
                     <input type="date" name="date_rdv" class="form-control" required>
                 </div>
-                <div class="col-md-3">
+                <div class="form-group" style="flex:1">
                     <label class="form-label">Heure</label>
                     <input type="time" name="heure" class="form-control" required>
                 </div>
-                <div class="col-12">
-                    <label class="form-label">Motif</label>
-                    <textarea name="motif" class="form-control" rows="3" required></textarea>
-                </div>
-                <div class="col-12">
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Prendre Rendez-vous</button>
-                </div>
             </div>
+            <div class="form-group">
+                <label class="form-label">Motif</label>
+                <textarea name="motif" class="form-control" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Prendre Rendez-vous</button>
         </form>
     </div>
 </div>

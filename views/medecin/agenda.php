@@ -1,9 +1,9 @@
-<h2 class="section-title"><i class="fas fa-calendar-check me-2"></i>Agenda</h2>
+<h2 class="section-title"><i class="fas fa-calendar-check"></i>Agenda</h2>
 <div class="card">
     <div class="card-body">
         <?php if (count($rendezvousList) > 0): ?>
-        <div class="table-responsive">
-            <table class="table table-hover">
+        <div class="table-container">
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Date</th>
@@ -24,15 +24,15 @@
                         <td><?= htmlspecialchars($rdv['motif'] ?? '-') ?></td>
                         <td><?= htmlspecialchars($rdv['lieu'] ?? '-') ?></td>
                         <td>
-                            <span class="badge bg-<?= $rdv['statut'] === 'confirme' ? 'success' : ($rdv['statut'] === 'annule' ? 'danger' : 'warning') ?>">
+                            <span class="badge badge-<?= $rdv['statut'] === 'confirme' ? 'confirme' : ($rdv['statut'] === 'annule' ? 'annule' : 'en_attente') ?>">
                                 <?= htmlspecialchars($rdv['statut'] ?? 'en_attente') ?>
                             </span>
                         </td>
-                        <td>
+                        <td class="table-actions">
                             <?php if ($rdv['statut'] !== 'annule'): ?>
-                            <a href="?section=confirm-rdv&id_rdv=<?= $rdv['id_rdv'] ?>" class="btn btn-sm btn-outline-success"><i class="fas fa-check"></i></a>
-                            <a href="?section=modifier-rdv&id_rdv=<?= $rdv['id_rdv'] ?>" class="btn btn-sm btn-outline-warning"><i class="fas fa-edit"></i></a>
-                            <a href="?section=cancel-rdv&id_rdv=<?= $rdv['id_rdv'] ?>" class="btn btn-sm btn-outline-danger"><i class="fas fa-times"></i></a>
+                            <a href="?section=confirm-rdv&id_rdv=<?= $rdv['id_rdv'] ?>" class="btn btn-sm btn-success"><i class="fas fa-check"></i></a>
+                            <a href="?section=modifier-rdv&id_rdv=<?= $rdv['id_rdv'] ?>" class="btn btn-sm btn-outline"><i class="fas fa-edit"></i></a>
+                            <a href="?section=cancel-rdv&id_rdv=<?= $rdv['id_rdv'] ?>" class="btn btn-sm btn-danger"><i class="fas fa-times"></i></a>
                             <?php endif; ?>
                         </td>
                     </tr>

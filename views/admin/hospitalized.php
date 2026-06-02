@@ -24,7 +24,7 @@
                 </tr>
                 <?php endforeach; ?>
                 <?php if (empty($hospitalized)): ?>
-                <tr><td colspan="5" class="empty-state-cell">Aucune hospitalisation en cours</td></tr>
+                <tr><td colspan="5" class="text-center text-muted">Aucune hospitalisation en cours</td></tr>
                 <?php endif; ?>
             </tbody>
         </table>

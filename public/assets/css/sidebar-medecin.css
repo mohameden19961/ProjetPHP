@@ -1,0 +1,64 @@
+.sidebar-medecin {
+  width: var(--sidebar-width);
+  background: var(--primary-dark);
+  color: var(--white);
+  padding: 1.25rem;
+  flex-shrink: 0;
+  overflow-y: auto;
+}
+.sidebar-medecin .sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 2rem;
+  padding: 0 0.75rem;
+}
+.sidebar-medecin .sidebar-logo i { color: #93c5fd; }
+.sidebar-medecin .sidebar-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255,255,255,0.5);
+  padding: 0 0.75rem;
+  margin-bottom: 0.5rem;
+}
+.sidebar-medecin .sidebar-nav { display: flex; flex-direction: column; gap: 2px; }
+.sidebar-medecin .sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.7);
+  border-radius: var(--radius);
+  transition: all 0.15s;
+}
+.sidebar-medecin .sidebar-link i { width: 20px; text-align: center; font-size: 0.9375rem; color: rgba(255,255,255,0.4); }
+.sidebar-medecin .sidebar-link:hover { background: rgba(255,255,255,0.1); color: var(--white); }
+.sidebar-medecin .sidebar-link:hover i { color: #93c5fd; }
+.sidebar-medecin .sidebar-link.active { background: rgba(255,255,255,0.15); color: var(--white); font-weight: 600; }
+.sidebar-medecin .sidebar-link.active i { color: #93c5fd; }
+.sidebar-medecin .sidebar-user {
+  text-align: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  margin-bottom: 1rem;
+}
+.sidebar-medecin .avatar-placeholder {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.5rem;
+  font-size: 1.25rem;
+  color: var(--white);
+}
+.sidebar-medecin .sidebar-user-name { font-size: 0.9375rem; font-weight: 600; }
+.sidebar-medecin .sidebar-user-role { font-size: 0.75rem; color: #93c5fd; }

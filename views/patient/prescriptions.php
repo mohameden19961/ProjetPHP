@@ -1,9 +1,9 @@
-<h2 class="section-title"><i class="fas fa-prescription me-2"></i>Mes Ordonnances</h2>
+<h2 class="page-title"><i class="fas fa-prescription"></i>Mes Ordonnances</h2>
 <div class="card">
     <div class="card-body">
         <?php if (count($ordonnances) > 0): ?>
-        <div class="table-responsive">
-            <table class="table table-hover">
+        <div class="table-container">
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Date</th>

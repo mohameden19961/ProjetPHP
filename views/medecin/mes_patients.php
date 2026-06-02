@@ -1,9 +1,9 @@
-<h2 class="section-title"><i class="fas fa-users me-2"></i>Mes Patients</h2>
+<h2 class="section-title"><i class="fas fa-users"></i>Mes Patients</h2>
 <div class="card">
     <div class="card-body">
         <?php if (count($mesPatients) > 0): ?>
-        <div class="table-responsive">
-            <table class="table table-hover">
+        <div class="table-container">
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Nom</th>
@@ -20,10 +20,10 @@
                         <td><?= htmlspecialchars($p['prenom']) ?></td>
                         <td><?= htmlspecialchars($p['email'] ?? '-') ?></td>
                         <td><?= htmlspecialchars($p['telephone'] ?? '-') ?></td>
-                        <td>
-                            <a href="?section=dossiers&id=<?= $p['id_patient'] ?>" class="btn btn-sm btn-outline-primary"><i class="fas fa-folder-open"></i></a>
-                            <a href="?section=modifier-patient&id=<?= $p['id_patient'] ?>" class="btn btn-sm btn-outline-warning"><i class="fas fa-edit"></i></a>
-                            <a href="?section=mes_patients&action=delete&id=<?= $p['id_patient'] ?>" class="btn btn-sm btn-outline-danger" data-confirm="Supprimer ce patient ?"><i class="fas fa-trash"></i></a>
+                        <td class="table-actions">
+                            <a href="?section=dossiers&id=<?= $p['id_patient'] ?>" class="btn btn-sm btn-outline"><i class="fas fa-folder-open"></i></a>
+                            <a href="?section=modifier-patient&id=<?= $p['id_patient'] ?>" class="btn btn-sm btn-outline"><i class="fas fa-edit"></i></a>
+                            <a href="?section=mes_patients&action=delete&id=<?= $p['id_patient'] ?>" class="btn btn-sm btn-danger" data-confirm="Supprimer ce patient ?"><i class="fas fa-trash"></i></a>
                         </td>
                     </tr>
                     <?php endforeach; ?>

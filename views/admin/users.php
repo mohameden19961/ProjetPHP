@@ -17,7 +17,7 @@
                     <option value="assistant" <?= $departement === 'assistant' ? 'selected' : '' ?>>Assistants</option>
                 </select>
             </div>
-            <div class="form-group d-flex align-center mb-0 pt-4">
+            <div class="form-group d-flex align-center mb-0 mt-4">
                 <button type="submit" class="btn btn-primary w-100"><i class="fas fa-search"></i> Rechercher</button>
             </div>
         </form>
@@ -53,13 +53,13 @@
                 </tr>
                 <?php endforeach; ?>
                 <?php if (empty($allUsers)): ?>
-                <tr><td colspan="6" class="empty-state-cell">Aucun utilisateur trouvé</td></tr>
+                <tr><td colspan="6" class="text-center text-muted">Aucun utilisateur trouvé</td></tr>
                 <?php endif; ?>
             </tbody>
         </table>
     </div>
 </div>
-<form id="deleteForm" method="POST" class="d-none">
+<form id="deleteForm" method="POST" style="display:none;">
     <input type="hidden" name="user_id" id="deleteUserId">
     <input type="hidden" name="supprimer_utilisateur" value="1">
 </form>

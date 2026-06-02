@@ -1,9 +1,9 @@
-<h2 class="section-title"><i class="fas fa-flask me-2"></i>Mes Examens</h2>
+<h2 class="page-title"><i class="fas fa-flask"></i>Mes Examens</h2>
 <div class="card">
     <div class="card-body">
         <?php if (count($examens) > 0): ?>
-        <div class="table-responsive">
-            <table class="table table-hover">
+        <div class="table-container">
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Date</th>

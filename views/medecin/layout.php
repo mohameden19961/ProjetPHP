@@ -9,7 +9,7 @@
         <aside class="sidebar">
             <div class="sidebar-section">
                 <div class="sidebar-label">Dr. <?= htmlspecialchars($medecin['prenom'] . ' ' . $medecin['nom']) ?></div>
-                <small class="text-muted d-block mb-2 sidebar-subtitle"><?= htmlspecialchars($medecin['spécialité'] ?? '') ?></small>
+                <small class="sidebar-subtitle text-muted"><?= htmlspecialchars($medecin['spécialité'] ?? '') ?></small>
                 <nav class="sidebar-nav">
                     <a class="sidebar-link <?= $section === 'dashboard' ? 'active' : '' ?>" href="?section=dashboard"><i class="fas fa-th-large"></i> Dashboard</a>
                     <a class="sidebar-link <?= $section === 'mes_patients' ? 'active' : '' ?>" href="?section=mes_patients"><i class="fas fa-users"></i> Mes Patients</a>
@@ -22,9 +22,9 @@
         </aside>
         <main class="main-content">
             <?php if ($message): ?>
-            <div class="alert alert-<?= $msg_type === 'success' ? 'success' : 'danger' ?> alert-dismissible fade show">
+            <div class="alert-custom alert-<?= $msg_type === 'success' ? 'success' : 'danger' ?>">
+                <i class="fas fa-<?= $msg_type === 'success' ? 'check-circle' : 'exclamation-triangle' ?>"></i>
                 <?= htmlspecialchars($message) ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
             <?php endif; ?>
             <?php
@@ -46,6 +46,7 @@
             ?>
         </main>
     </div>
+    <script src="assets/js/medecin.js"></script>
     <?php require __DIR__ . '/../shared/scripts.php'; ?>
 </body>
 </html>

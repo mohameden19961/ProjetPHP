@@ -23,9 +23,9 @@
         </aside>
         <main class="main-content">
             <?php if ($message): ?>
-            <div class="alert alert-<?= $msg_type === 'success' ? 'success' : 'info' ?> alert-dismissible fade show">
+            <div class="alert-custom alert-<?= $msg_type === 'success' ? 'success' : 'info' ?>">
+                <i class="fas fa-<?= $msg_type === 'success' ? 'check-circle' : 'info-circle' ?>"></i>
                 <?= htmlspecialchars($message) ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
             <?php endif; ?>
             <?php
@@ -46,6 +46,7 @@
             ?>
         </main>
     </div>
+    <script src="assets/js/patient.js"></script>
     <?php require __DIR__ . '/../shared/scripts.php'; ?>
 </body>
 </html>

@@ -32,6 +32,7 @@
             ?>
         </main>
     </div>
+    <script src="assets/js/admin.js"></script>
     <?php require __DIR__ . '/../shared/scripts.php'; ?>
 </body>
 </html>

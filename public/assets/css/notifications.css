@@ -1,0 +1,70 @@
+.notification-bar {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-200);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.notification-bar-title {
+  padding: 1rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--gray-800);
+  border-bottom: 1px solid var(--gray-100);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.notification-item {
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--gray-50);
+  font-size: 0.8125rem;
+}
+.notification-item:last-child { border-bottom: none; }
+.notification-item .notif-icon { font-size: 1rem; margin-top: 0.125rem; flex-shrink: 0; }
+.notification-item .notif-text { flex: 1; color: var(--gray-700); }
+.notification-item .notif-time { font-size: 0.6875rem; color: var(--gray-400); white-space: nowrap; }
+
+.next-appointment-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  border: 1px solid var(--gray-200);
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+.next-appointment-card .na-icon {
+  width: 48px; height: 48px;
+  background: var(--primary-light);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+.next-appointment-card .na-info { flex: 1; }
+.next-appointment-card .na-label { font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.next-appointment-card .na-doctor { font-weight: 600; font-size: 0.9375rem; color: var(--gray-800); }
+.next-appointment-card .na-details { font-size: 0.8125rem; color: var(--gray-500); margin-top: 0.25rem; }
+
+.floating-card {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--gray-200);
+  max-width: 280px;
+  z-index: 50;
+}
+.floating-card-title { font-weight: 600; font-size: 0.875rem; margin-bottom: 0.5rem; color: var(--gray-800); }
+.floating-card-text { font-size: 0.8125rem; color: var(--gray-500); margin-bottom: 0.75rem; }
