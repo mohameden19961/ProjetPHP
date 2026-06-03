@@ -16,11 +16,11 @@ function authService_validateRegistration(array $data): array {
     if (!filter_var($data['email'] ?? '', FILTER_VALIDATE_EMAIL)) $errors[] = "Format d'email invalide";
     if ($data['password'] !== $data['confirm_password']) $errors[] = "Les mots de passe ne correspondent pas";
     if (strlen($data['password'] ?? '') < 8) $errors[] = "Le mot de passe doit contenir au moins 8 caractères";
-    if (in_array($data['role'] ?? '', ['medecin', 'assistant'])) {
-        $validCodes = ['medecin' => 'medecin456', 'assistant' => 'assistant789'];
+    if (in_array($data[SESS_ROLE] ?? '', [ROLE_MEDECIN, ROLE_ASSISTANT])) {
+        $validCodes = [ROLE_MEDECIN => 'medecin456', ROLE_ASSISTANT => 'assistant789'];
         if (empty($data['auth_code'])) {
             $errors[] = "Un code d'autorisation est requis pour ce rôle";
-        } elseif (($data['auth_code'] ?? '') !== $validCodes[$data['role']]) {
+        } elseif (($data['auth_code'] ?? '') !== $validCodes[$data[SESS_ROLE]]) {
             $errors[] = "Code d'autorisation invalide pour ce rôle";
         }
     }
@@ -34,17 +34,17 @@ function authService_register(array $data): int {
     $userId = user_create([
         'nom' => $data['nom'], 'prenom' => $data['prenom'],
         'email' => $data['email'], 'telephone' => $data['telephone'] ?? '',
-        'role' => $data['role'] ?? 'patient'
+        SESS_ROLE => $data[SESS_ROLE] ?? ROLE_PATIENT
     ]);
-    $role = $data['role'] ?? 'patient';
+    $role = $data[SESS_ROLE] ?? ROLE_PATIENT;
     switch ($role) {
-        case 'medecin':
+        case ROLE_MEDECIN:
             medecin_createFromUser($userId, $data['nom'], $data['prenom'], $data['specialite_medecin'] ?? 'À définir', $data['email'], $data['telephone'] ?? '');
             break;
-        case 'assistant':
+        case ROLE_ASSISTANT:
             assistant_createFromUser($userId, $data['specialite_assistant'] ?? 'À définir');
             break;
-        case 'patient':
+        case ROLE_PATIENT:
             patient_createFromUser($userId, $data['nom'], $data['prenom'], $data['email'], $data['telephone'] ?? '');
             break;
     }

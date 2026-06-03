@@ -4,7 +4,7 @@ require_once __DIR__ . '/../config/app.php';
 require_once __DIR__ . '/../services/MedecinService.php';
 
 function medecin_handleRequest(): void {
-    requireRole('medecin');
+    requireRole(ROLE_MEDECIN);
     $idMedecin = (int)$_SESSION['medecin_id'];
     $section = $_GET['section'] ?? 'dashboard';
     $message = $_SESSION['message'] ?? '';
@@ -12,7 +12,7 @@ function medecin_handleRequest(): void {
     unset($_SESSION['message'], $_SESSION['msg_type']);
 
     $medecin = medecinService_getById($idMedecin);
-    if (!$medecin) redirect('connection.php');
+    if (!$medecin) redirect(URL_LOGIN);
 
     $rendezvous = medecinService_getRendezvous($idMedecin);
     $nextRendezvous = !empty($rendezvous) ? $rendezvous[0] : null;

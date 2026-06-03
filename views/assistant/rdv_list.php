@@ -25,7 +25,7 @@
                         <td><?= htmlspecialchars($rdv['patient_prenom'] . ' ' . $rdv['patient_nom']) ?></td>
                         <td>Dr. <?= htmlspecialchars($rdv['medecin_prenom'] . ' ' . $rdv['medecin_nom']) ?></td>
                         <td><?= htmlspecialchars($rdv['motif'] ?? '-') ?></td>
-                        <td><span class="badge badge-<?= $rdv['statut'] === 'confirme' ? 'green' : ($rdv['statut'] === 'annule' ? 'red' : 'orange') ?>"><?= htmlspecialchars($rdv['statut'] ?? 'en_attente') ?></span></td>
+                        <td><span class="badge badge-<?= $rdv['statut'] === RDV_CONFIRME ? 'green' : ($rdv['statut'] === RDV_ANNULE ? 'red' : 'orange') ?>"><?= htmlspecialchars($rdv['statut'] ?? RDV_EN_ATTENTE) ?></span></td>
                         <td>
                             <a href="?action=cancel_rdv&rdv_id=<?= $rdv['id_rdv'] ?>" class="btn btn-sm btn-danger" data-confirm="Annuler ce rendez-vous ?"><i class="fas fa-times"></i></a>
                         </td>

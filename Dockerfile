@@ -1,6 +1,6 @@
-FROM php:8.2-cli
+FROM php:8.4-cli
 RUN docker-php-ext-install pdo pdo_mysql mysqli
 WORKDIR /app
 COPY . .
-EXPOSE 8080
-CMD ["php", "-S", "0.0.0.0:8080", "-t", "public"]
+EXPOSE 8001
+CMD ["php", "-S", "0.0.0.0:8001", "router.php"]

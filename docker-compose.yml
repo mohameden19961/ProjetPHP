@@ -1,30 +1,44 @@
-version: "3.8"
 
 services:
   db:
     image: mysql:8.0
-    container_name: prestashop-db
-    restart: always
+    container_name: gcm-db
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: rootpass
-      MYSQL_DATABASE: prestashop
-      MYSQL_USER: ps_user
-      MYSQL_PASSWORD: ps_pass
+      MYSQL_DATABASE: gestion_cabinet_medical
+      MYSQL_USER: gcm_user
+      MYSQL_PASSWORD: gcm_pass
     ports:
-      - "3306:3306"
-
-  prestashop:
-    image: prestashop/prestashop:8.1-apache
-    container_name: prestashop
-    depends_on:
-      - db
-    ports:
-      - "8080:80"
+      - "3307:3306"
     volumes:
-      - ./ProjetPi-main:/var/www/html
+      - db_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./database/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: gcm-app
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8001:8001"
+    volumes:
+      - .:/app
+      - /app/uploads  # anonymous volume to keep uploads between restarts
     environment:
-      DB_SERVER: db
-      DB_USER: ps_user
-      DB_PASSWORD: ps_pass
-      DB_NAME: prestashop
-    restart: always
+      MYSQLHOST: db
+      MYSQLUSER: gcm_user
+      MYSQLPASSWORD: gcm_pass
+      MYSQLDATABASE: gestion_cabinet_medical
+      MYSQLPORT: "3306"
+    restart: unless-stopped
+
+volumes:
+  db_data:

@@ -79,33 +79,33 @@
                         <div class="form-group">
                             <label class="form-label">Vous êtes</label>
                             <div class="role-selector">
-                                <div class="role-card <?= (!isset($formData['role']) || $formData['role'] === 'patient') ? 'selected' : '' ?>" data-role="patient" onclick="selectRole('patient')">
+                                <div class="role-card <?= (!isset($formData[SESS_ROLE]) || $formData[SESS_ROLE] === ROLE_PATIENT) ? 'selected' : '' ?>" data-role="patient" onclick="selectRole('patient')">
                                     <i class="fas fa-user-injured"></i>
                                     <span>Patient</span>
                                 </div>
-                                <div class="role-card <?= (isset($formData['role']) && $formData['role'] === 'medecin') ? 'selected' : '' ?>" data-role="medecin" onclick="selectRole('medecin')">
+                                <div class="role-card <?= (isset($formData[SESS_ROLE]) && $formData[SESS_ROLE] === ROLE_MEDECIN) ? 'selected' : '' ?>" data-role="medecin" onclick="selectRole('medecin')">
                                     <i class="fas fa-user-md"></i>
                                     <span>Médecin</span>
                                 </div>
-                                <div class="role-card <?= (isset($formData['role']) && $formData['role'] === 'assistant') ? 'selected' : '' ?>" data-role="assistant" onclick="selectRole('assistant')">
+                                <div class="role-card <?= (isset($formData[SESS_ROLE]) && $formData[SESS_ROLE] === ROLE_ASSISTANT) ? 'selected' : '' ?>" data-role="assistant" onclick="selectRole('assistant')">
                                     <i class="fas fa-user-nurse"></i>
                                     <span>Assistant</span>
                                 </div>
                             </div>
-                            <div class="auth-code-field <?= (isset($formData['role']) && $formData['role'] !== 'patient') ? 'active' : '' ?>" id="auth-code-field">
+                            <div class="auth-code-field <?= (isset($formData[SESS_ROLE]) && $formData[SESS_ROLE] !== ROLE_PATIENT) ? 'active' : '' ?>" id="auth-code-field">
                                 <label class="form-label" for="auth-code">Code d'autorisation</label>
                                 <input type="password" id="auth-code" name="auth_code" class="form-control" placeholder="Code fourni par l'administrateur" value="<?= htmlspecialchars($formData['auth_code'] ?? '') ?>">
                                 <small class="error-message">Ce code est obligatoire pour les rôles spéciaux</small>
                             </div>
-                            <div id="specialite-medecin" class="auth-code-field <?= (isset($formData['role']) && $formData['role'] === 'medecin') ? 'active' : '' ?>">
+                            <div id="specialite-medecin" class="auth-code-field <?= (isset($formData[SESS_ROLE]) && $formData[SESS_ROLE] === ROLE_MEDECIN) ? 'active' : '' ?>">
                                 <label class="form-label" for="specialite-medecin-input">Spécialité médicale</label>
                                 <input type="text" id="specialite-medecin-input" name="specialite_medecin" class="form-control" placeholder="Votre spécialité" value="<?= htmlspecialchars($formData['specialite_medecin'] ?? '') ?>">
                             </div>
-                            <div id="specialite-assistant" class="auth-code-field <?= (isset($formData['role']) && $formData['role'] === 'assistant') ? 'active' : '' ?>">
+                            <div id="specialite-assistant" class="auth-code-field <?= (isset($formData[SESS_ROLE]) && $formData[SESS_ROLE] === ROLE_ASSISTANT) ? 'active' : '' ?>">
                                 <label class="form-label" for="specialite-assistant-input">Département</label>
                                 <input type="text" id="specialite-assistant-input" name="specialite_assistant" class="form-control" placeholder="Votre département" value="<?= htmlspecialchars($formData['specialite_assistant'] ?? '') ?>">
                             </div>
-                            <input type="hidden" id="selected-role" name="role" value="<?= htmlspecialchars($formData['role'] ?? 'patient') ?>">
+                            <input type="hidden" id="selected-role" name="role" value="<?= htmlspecialchars($formData[SESS_ROLE] ?? ROLE_PATIENT) ?>">
                         </div>
                         <div class="form-row">
                             <div class="form-group">
@@ -134,8 +134,8 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script>
-    <?php if (isset($formData['role'])): ?>
-    selectRole('<?= $formData['role'] ?>');
+    <?php if (isset($formData[SESS_ROLE])): ?>
+    selectRole('<?= $formData[SESS_ROLE] ?>');
     <?php else: ?>
     selectRole('patient');
     <?php endif; ?>

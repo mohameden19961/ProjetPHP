@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/app.php';
 
 function rdv_getUpcomingForPatient(int $patientId): array {
     $conn = getDbConnection();
@@ -10,7 +11,7 @@ function rdv_getUpcomingForPatient(int $patientId): array {
         FROM rendezvous r
         JOIN traitement t ON r.id_traitement = t.id_traitement
         JOIN medecin m ON t.id_medecin = m.id_medecin
-        WHERE t.id_patient = ? AND r.date_rdv >= CURDATE() AND r.statut != 'annule'
+        WHERE t.id_patient = ? AND r.date_rdv >= CURDATE() AND r.statut != '" . RDV_ANNULE . "'
         ORDER BY r.date_rdv ASC, r.heure ASC
     ");
     $stmt->bind_param("i", $patientId);
@@ -28,7 +29,7 @@ function rdv_getUpcomingForMedecin(int $medecinId): array {
         FROM rendezvous r
         JOIN traitement t ON r.id_traitement = t.id_traitement
         JOIN patient p ON t.id_patient = p.id_patient
-        WHERE t.id_medecin = ? AND r.date_rdv >= CURDATE() AND r.statut != 'annule'
+        WHERE t.id_medecin = ? AND r.date_rdv >= CURDATE() AND r.statut != '" . RDV_ANNULE . "'
         ORDER BY r.date_rdv ASC, r.heure ASC
     ");
     $stmt->bind_param("i", $medecinId);

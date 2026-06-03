@@ -4,14 +4,14 @@ require_once __DIR__ . '/../config/app.php';
 require_once __DIR__ . '/../services/PatientService.php';
 
 function patient_handleRequest(): void {
-    requireRole('patient');
-    $idPatient = (int)$_SESSION['patient_id'];
+    requireRole(ROLE_PATIENT);
+    $idPatient = (int)$_SESSION[SESS_PATIENT_ID];
     $section = $_GET['section'] ?? 'dashboard';
     $message = '';
     $msgType = '';
 
     $patient = patientService_getById($idPatient);
-    if (!$patient) redirect('connection.php');
+    if (!$patient) redirect(URL_LOGIN);
 
     $upcomingRendezvous = patientService_getUpcomingRdv($idPatient);
     $ordonnances = patientService_getOrdonnances($idPatient);

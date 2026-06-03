@@ -13,8 +13,8 @@
                 <label class="form-label">Filtre</label>
                 <select name="departement" class="form-control" id="dept-filter">
                     <option value="tous" <?= $departement === 'tous' ? 'selected' : '' ?>>Tous</option>
-                    <option value="medecin" <?= $departement === 'medecin' ? 'selected' : '' ?>>Médecins</option>
-                    <option value="assistant" <?= $departement === 'assistant' ? 'selected' : '' ?>>Assistants</option>
+                    <option value="medecin" <?= $departement === ROLE_MEDECIN ? 'selected' : '' ?>>Médecins</option>
+                    <option value="assistant" <?= $departement === ROLE_ASSISTANT ? 'selected' : '' ?>>Assistants</option>
                 </select>
             </div>
             <div class="form-group d-flex align-center mb-0 mt-4">
@@ -43,7 +43,7 @@
                     <td><?= htmlspecialchars($u['prenom']) ?></td>
                     <td><?= htmlspecialchars($u['email']) ?></td>
                     <td><?= htmlspecialchars($u['telephone'] ?? '-') ?></td>
-                    <td><span class="badge badge-<?= $u['rôle'] === 'medecin' ? 'green' : ($u['rôle'] === 'assistant' ? 'orange' : 'blue') ?>"><?= htmlspecialchars($u['rôle']) ?></span></td>
+                    <td><span class="badge badge-<?= $u['rôle'] === ROLE_MEDECIN ? 'green' : ($u['rôle'] === ROLE_ASSISTANT ? 'orange' : 'blue') ?>"><?= htmlspecialchars($u['rôle']) ?></span></td>
                     <td>
                         <div class="table-actions">
                             <a href="?view=user_details&id=<?= $u['id_utilisateur'] ?>" class="btn btn-outline btn-sm"><i class="fas fa-eye"></i></a>

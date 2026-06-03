@@ -4,12 +4,12 @@ require_once __DIR__ . '/../config/app.php';
 require_once __DIR__ . '/../services/AssistantService.php';
 
 function assistant_handleRequest(): void {
-    requireRole('assistant');
+    requireRole(ROLE_ASSISTANT);
     $action = $_GET['action'] ?? '';
     $success = $_GET['success'] ?? '';
     $error = $_GET['error'] ?? '';
 
-    $assistant = assistantService_getProfile((int)$_SESSION['user_id']);
+    $assistant = assistantService_getProfile((int)$_SESSION[SESS_USER_ID]);
     $patients = assistantService_getAllPatients();
     $medecins = assistantService_getAllMedecins();
     $rendezvous = assistantService_getUpcomingRdv();

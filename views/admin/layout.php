@@ -1,38 +1,33 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <?php $title = 'Dashboard Administrateur'; require __DIR__ . '/../shared/head.php'; ?>
-</head>
-<body>
-    <?php require __DIR__ . '/../shared/header.php'; ?>
-    <div class="app-layout">
-        <aside class="sidebar">
-            <div class="sidebar-section">
-                <div class="sidebar-label">Navigation</div>
-                <nav class="sidebar-nav">
-                    <a class="sidebar-link <?= $view === 'dashboard' ? 'active' : '' ?>" href="?view=dashboard"><i class="fas fa-th-large"></i> Tableau de bord</a>
-                    <a class="sidebar-link <?= $view === 'users' ? 'active' : '' ?>" href="?view=users"><i class="fas fa-users"></i> Utilisateurs</a>
-                    <a class="sidebar-link <?= $view === 'patients' ? 'active' : '' ?>" href="?view=patients"><i class="fas fa-user-injured"></i> Patients</a>
-                    <a class="sidebar-link <?= $view === 'appointments' ? 'active' : '' ?>" href="?view=appointments"><i class="fas fa-calendar-check"></i> Rendez-vous</a>
-                    <a class="sidebar-link <?= $view === 'hospitalized' ? 'active' : '' ?>" href="?view=hospitalized"><i class="fas fa-hospital"></i> Hospitalisations</a>
-                    <a class="sidebar-link <?= $view === 'prescriptions' ? 'active' : '' ?>" href="?view=prescriptions"><i class="fas fa-prescription"></i> Ordonnances</a>
-                    <a class="sidebar-link <?= $view === 'statistics' ? 'active' : '' ?>" href="?view=statistics"><i class="fas fa-chart-bar"></i> Statistiques</a>
-                    <a class="sidebar-link <?= $view === 'settings' ? 'active' : '' ?>" href="?view=settings"><i class="fas fa-cog"></i> Paramètres</a>
-                </nav>
-            </div>
-        </aside>
-        <main class="main-content">
-            <?php
-            $viewPath = __DIR__ . "/$view.php";
-            if (file_exists($viewPath)) {
-                require $viewPath;
-            } else {
-                require __DIR__ . '/dashboard.php';
-            }
-            ?>
-        </main>
-    </div>
-    <script src="assets/js/admin.js"></script>
-    <?php require __DIR__ . '/../shared/scripts.php'; ?>
-</body>
-</html>
+<?php
+$layout = [
+    'role'            => ROLE_ADMIN,
+    'title'           => 'Dashboard Administrateur',
+    'sidebarHeader'   => 'Navigation',
+    'navItems'        => [
+        ['url' => '?view=dashboard',     'icon' => 'fas fa-th-large',      'label' => 'Tableau de bord', 'active' => $view === 'dashboard'],
+        ['url' => '?view=users',         'icon' => 'fas fa-users',         'label' => 'Utilisateurs',     'active' => $view === 'users'],
+        ['url' => '?view=patients',      'icon' => 'fas fa-user-injured',  'label' => 'Patients',        'active' => $view === 'patients'],
+        ['url' => '?view=appointments',  'icon' => 'fas fa-calendar-check','label' => 'Rendez-vous',      'active' => $view === 'appointments'],
+        ['url' => '?view=hospitalized',  'icon' => 'fas fa-hospital',      'label' => 'Hospitalisations', 'active' => $view === 'hospitalized'],
+        ['url' => '?view=prescriptions', 'icon' => 'fas fa-prescription',  'label' => 'Ordonnances',      'active' => $view === 'prescriptions'],
+        ['url' => '?view=statistics',    'icon' => 'fas fa-chart-bar',     'label' => 'Statistiques',    'active' => $view === 'statistics'],
+        ['url' => '?view=settings',      'icon' => 'fas fa-cog',           'label' => 'Paramètres',      'active' => $view === 'settings'],
+    ],
+    'view'            => $view,
+    'viewMap'         => [
+        'dashboard'     => 'dashboard.php',
+        'users'         => 'users.php',
+        'patients'      => 'patients.php',
+        'appointments'  => 'appointments.php',
+        'hospitalized'  => 'hospitalized.php',
+        'prescriptions' => 'prescriptions.php',
+        'statistics'    => 'statistics.php',
+        'settings'      => 'settings.php',
+        'user_details'  => 'user_details.php',
+        'add_user'      => 'add_user.php',
+        'edit_user'     => 'edit_user.php',
+        'delete_account'=> 'delete_account.php',
+    ],
+    'jsFile'          => 'admin.js',
+];
+require __DIR__ . '/../shared/base_layout.php';

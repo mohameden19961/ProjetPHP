@@ -17,7 +17,7 @@ function auth_handleRegister(): void {
         'telephone' => $_POST['telephone'] ?? '',
         'password' => $_POST['password'] ?? '',
         'confirm_password' => $_POST['confirm_password'] ?? '',
-        'role' => $_POST['role'] ?? 'patient',
+        SESS_ROLE => $_POST[SESS_ROLE] ?? ROLE_PATIENT,
         'auth_code' => $_POST['auth_code'] ?? '',
         'specialite_medecin' => $_POST['specialite_medecin'] ?? '',
         'specialite_assistant' => $_POST['specialite_assistant'] ?? ''
@@ -27,12 +27,12 @@ function auth_handleRegister(): void {
     if (!empty($errors)) {
         $_SESSION['swal'] = ['icon' => 'error', 'title' => 'Erreur', 'text' => implode('<br>', $errors)];
         $_SESSION['form_data'] = $_POST;
-        redirect('connection.php');
+        redirect(URL_LOGIN);
     }
 
     authService_register($data);
     $_SESSION['swal'] = ['icon' => 'success', 'title' => 'Succès', 'text' => "Inscription réussie ! Vous pouvez maintenant vous connecter."];
-    redirect('connection.php');
+    redirect(URL_LOGIN);
 }
 
 function auth_handleLogin(): void {
@@ -42,7 +42,7 @@ function auth_handleLogin(): void {
     $user = authService_login($email, $password);
     if (!$user) {
         $_SESSION['swal'] = ['icon' => 'error', 'title' => 'Erreur', 'text' => "Email ou mot de passe incorrect"];
-        redirect('connection.php');
+        redirect(URL_LOGIN);
     }
 
     $_SESSION = securite_buildSession($user);
@@ -54,5 +54,5 @@ function auth_logout(): void {
     header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
     header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
     header("Pragma: no-cache");
-    redirect('connection.php');
+    redirect(URL_LOGIN);
 }

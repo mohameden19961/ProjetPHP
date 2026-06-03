@@ -2,11 +2,10 @@
 
 > **Projet Intégrateur** — 1ʳᵉ Année Licence — **Institut Supérieur du Numérique (SUPNUM)**
 
-[![PHP](https://img.shields.io/badge/PHP-8.x-777BB4?logo=php)](https://php.net)
-[![MySQL](https://img.shields.io/badge/MySQL-8.x-4479A1?logo=mysql)](https://mysql.com)
-[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker)](https://docker.com)
+[![PHP](https://img.shields.io/badge/PHP-8.4-777BB4?logo=php)](https://php.net)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql)](https://mysql.com)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker)](https://docker.com)
 [![License](https://img.shields.io/badge/Licence-MIT-green)](LICENSE)
-[![PRs](https://img.shields.io/badge/PRs-Bienvenue-brightgreen)]()
 
 ### 👥 Réalisé par
 
@@ -39,24 +38,26 @@
 
 ```
 ProjetPHP/
-├── config/          # Configuration (DB, app)
+├── config/          # Configuration (DB, constantes, app)
 ├── securite/        # 🔒 Sécurité (session, hash, sanitize)
 ├── controllers/     # 🎯 Endpoints HTTP (entrée/sortie uniquement)
 ├── services/        # ⚙️ Logique métier
 ├── models/          # 🗄️ Accès base de données (SQL)
-├── views/           # 🎨 Templates (auth, admin, medecin, patient, assistant)
-├── public/          # 🌐 Point d'entrée, assets (CSS/JS/images)
-│   ├── assets/
-│   │   ├── css/     #   Styles composants (variables, base, navbar, sidebar, cards, tables, forms, utilities)
-│   │   └── js/      #   Scripts (dashboard, auth, admin)
-│   └── *.php        #   Dispatchers (index, connection, dashboard_*, medecin, patient, assistant)
-└── database/        # 🗃️ SQL (schema + seed)
+├── views/           # 🎨 Templates (auth, admin, medecin, patient, assistant, shared/)
+├── public/          # 🌐 Assets statiques (CSS, JS, images)
+│   ├── assets/css/  #   Styles (base, layout, composants)
+│   ├── assets/js/   #   Scripts dashboard, auth
+│   └── api/         #   📡 Endpoints JSON (avec _helpers.php)
+├── database/        # 🗃️ SQL (schema + seed)
+├── router.php       # 🚦 Routeur unique (statique + PHP)
+└── index.php        # 🏠 Point d'entrée racine
 ```
 
 ### Flux de requête
 
 ```
-Navigateur → public/*.php → controllers/*Controller.php → services/*Service.php → models/*.php → MySQL
+Navigateur → router.php → index.php (ou public/*.php)
+  → controllers/*Controller.php → services/*Service.php → models/*.php → MySQL
 ```
 
 ---
@@ -65,7 +66,7 @@ Navigateur → public/*.php → controllers/*Controller.php → services/*Servic
 
 ### Prérequis
 
-- PHP 8.0+
+- PHP 8.4+
 - MySQL 8.x
 - [Docker](https://docker.com) (optionnel)
 
@@ -88,13 +89,14 @@ nano .env
 
 ```env
 MYSQLHOST=localhost
-MYSQLUSER=root
-MYSQLPASSWORD=votre_mot_de_passe
+MYSQLUSER=gcm_user
+MYSQLPASSWORD=gcm_pass
 MYSQLDATABASE=gestion_cabinet_medical
 MYSQLPORT=3306
 ```
 
 > ⚠️ Le fichier `.env` contient vos identifiants — il est **exclu de Git** par `.gitignore`.
+> En Docker, `MYSQLHOST=db` (nom du service dans `docker-compose.yml`).
 
 ### 3. Initialiser la base de données
 
@@ -105,30 +107,35 @@ mysql -u root -p < database/seed.sql
 
 ### 4. Lancer l'application
 
-**Avec PHP built-in server :**
+**Avec PHP built-in server (développement) :**
 
 ```bash
-php -S localhost:8000 -t public
+php -S 0.0.0.0:8001 router.php
 ```
 
-**Avec Docker :**
+Accédez à [http://localhost:8001](http://localhost:8001).
+
+**Avec Docker (production locale) :**
 
 ```bash
 docker compose up -d
+# Base de données initialisée automatiquement (schema.sql + seed.sql)
 ```
 
-Accédez à [http://localhost:8000](http://localhost:8000).
+Accédez à [http://localhost:8001](http://localhost:8001).
 
 ---
 
 ## 🔐 Comptes de démonstration
 
-| Rôle         | Email                       | Mot de passe     |
-|-------------|-----------------------------|------------------|
-| 🛡️ Admin    | `admin@cabinet.com`         | `admin123`       |
-| 👨‍⚕️ Médecin  | `amadou.diallo@cabinet.com` | `medecin123`     |
-| 🧑‍⚕️ Assistant | `aicha.sow@cabinet.com`    | `assistant123`   |
-| 👤 Patient   | `mariam.sy@email.com`       | `patient123`     |
+| Rôle         | Identifiant                  | Mot de passe     |
+|-------------|------------------------------|------------------|
+| 🛡️ Admin    | `24068@supnum.mr`            | `admin123`       |
+| 👨‍⚕️ Médecin  | `test.doctor@gmail.com`      | `medecin123`     |
+| 🧑‍⚕️ Assistant | `test.assistant@gmail.com`  | `assistant123`   |
+| 👤 Patient   | `login_pat1`                 | `patient123`     |
+
+> ℹ️ Les patients se connectent avec leur **login** (pas email). Les autres rôles utilisent leur **email**.
 
 ### Codes d'inscription
 
@@ -180,12 +187,12 @@ php -l config/*.php controllers/*.php services/*.php models/*.php
 
 | Technologie    | Usage                            |
 |---------------|----------------------------------|
-| PHP 8.x       | Langage procédural pur           |
-| MySQL 8.x     | Base de données relationnelle    |
-| Docker        | Conteneurisation                 |
+| PHP 8.4       | Langage procédural pur           |
+| MySQL 8.0     | Base de données relationnelle    |
+| Docker Compose| Conteneurisation (app + db)      |
 | Chart.js      | Graphiques statistiques (admin)  |
 | SweetAlert2   | Notifications utilisateur        |
-| Font Awesome  | Icônes                           |
+| Font Awesome 6| Icônes                           |
 | Aucun framework | Architecture MVC maison        |
 
 ---
@@ -195,10 +202,10 @@ php -l config/*.php controllers/*.php services/*.php models/*.php
 ```
 ProjetPHP/
 ├── config/
-│   ├── app.php           # Session, auth wrappers, alerts
+│   ├── app.php           # Session, constantes, auth wrappers, alerts
 │   └── database.php      # Connexion MySQL via .env
 ├── securite/
-│   ├── Session.php       # Gestion session, auth, rôles
+│   ├── Session.php       # Gestion session, auth, rôles, redirect
 │   ├── Hash.php          # Hachage SHA-256 centralisé
 │   └── Sanitizer.php     # Nettoyage entrées
 ├── controllers/
@@ -222,16 +229,26 @@ ProjetPHP/
 │   ├── Ordonnance.php    # CRUD ordonnance
 │   ├── Hospitalisation.php
 │   ├── Examen.php
-│   └── Traitement.php
+│   └── Traitement.php    # findOrCreate liaison patient-médecin
 ├── views/
 │   ├── auth/             # Login / Inscription
 │   ├── admin/            # Dashboard, users, stats, settings
 │   ├── medecin/          # Agenda, patients, prescriptions
 │   ├── patient/          # Profil, rdv, ordonnances
 │   ├── assistant/        # Gestion patients, rdv, examens
-│   └── shared/           # Head, header, scripts
+│   └── shared/           # Head, header, scripts, base_layout
 ├── public/
-│   ├── index.php         # Routeur racine
+│   ├── api/              # 📡 Endpoints JSON (boilerplate mutualisé via _helpers.php)
+│   │   ├── _helpers.php  #   Méthode, ID, api_success(), api_error()
+│   │   ├── patients.php
+│   │   ├── medecins.php
+│   │   ├── assistants.php
+│   │   ├── utilisateurs.php
+│   │   ├── examens.php
+│   │   ├── ordonnances.php
+│   │   ├── rendezvous.php
+│   │   └── hospitalisations.php
+│   ├── index.php         # Point d'entrée unique
 │   ├── connection.php    # Login / Register
 │   ├── medecin.php       # Espace médecin
 │   ├── patient.php       # Espace patient
@@ -240,7 +257,11 @@ ProjetPHP/
 ├── database/
 │   ├── schema.sql        # Structure complète
 │   └── seed.sql          # Données de démonstration
+├── router.php            # 🚦 Routeur (statique → readfile, PHP → require)
+├── index.php             # 🏠 Redirection vers public/
 ├── .env.example          # Exemple de configuration
+├── Dockerfile            # 🐳 PHP 8.4-cli + router.php
+├── docker-compose.yml    # 🐳 App + MySQL 8.0 (init auto)
 └── .gitignore
 ```
 

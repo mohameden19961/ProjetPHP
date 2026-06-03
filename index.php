@@ -3,14 +3,7 @@
 require_once __DIR__ . '/config/app.php';
 
 if (isAuthenticated()) {
-    $redirect = match ($_SESSION['role']) {
-        'admin' => 'dashboard_administrateur.php',
-        'medecin' => 'medecin.php',
-        'patient' => 'patient.php',
-        'assistant' => 'assistant.php',
-        default => 'connection.php'
-    };
-    redirect($redirect);
+    redirect(securite_getRedirect($_SESSION['role']));
 }
 
-redirect('connection.php');
+redirect(securite_getRedirect(''));

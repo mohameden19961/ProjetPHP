@@ -22,5 +22,5 @@ function rdvService_update(int $id, string $date, string $heure, string $lieu, s
 }
 
 function rdvService_cancel(int $id): void {
-    rdv_updateStatus($id, 'annule');
+    rdv_updateStatus($id, RDV_ANNULE);
 }

@@ -4,7 +4,7 @@ require_once __DIR__ . '/../config/app.php';
 require_once __DIR__ . '/../services/AdminService.php';
 
 function admin_handleRequest(): void {
-    requireRole('admin');
+    requireRole(ROLE_ADMIN);
     $view = $_GET['view'] ?? 'dashboard';
     $stats = adminService_getStats();
     $allUsers = [];
@@ -12,7 +12,7 @@ function admin_handleRequest(): void {
     $search = $_GET['search'] ?? '';
     $departement = $_GET['departement'] ?? 'tous';
 
-    $adminId = (int)$_SESSION['user_id'];
+    $adminId = (int)$_SESSION[SESS_USER_ID];
     $adminProfile = adminService_getProfile($adminId);
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -52,17 +52,17 @@ function admin_handlePost(): void {
     }
 
     if (isset($_POST['modifier_utilisateur'])) {
-        adminService_updateUser((int)$_POST['user_id'], $_POST);
+        adminService_updateUser((int)$_POST[SESS_USER_ID], $_POST);
         setAlert('success', 'Succès', "Utilisateur modifié avec succès");
     }
 
     if (isset($_POST['update_profile'])) {
-        adminService_updateProfile((int)$_SESSION['user_id'], $_POST, $_FILES['profile_picture'] ?? []);
+        adminService_updateProfile((int)$_SESSION[SESS_USER_ID], $_POST, $_FILES[SESS_PROFILE_PIC] ?? []);
         setAlert('success', 'Succès', "Profil mis à jour avec succès");
     }
 
     if (isset($_POST['supprimer_utilisateur'])) {
-        adminService_deleteUser((int)$_POST['user_id']);
+        adminService_deleteUser((int)$_POST[SESS_USER_ID]);
         setAlert('success', 'Succès', "Utilisateur supprimé avec succès");
     }
 

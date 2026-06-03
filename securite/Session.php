@@ -7,20 +7,20 @@ function securite_startSession(): void {
 }
 
 function securite_isAuthenticated(): bool {
-    return isset($_SESSION['user_id']);
+    return isset($_SESSION[SESS_USER_ID]);
 }
 
 function securite_requireAuth(): void {
     if (!securite_isAuthenticated()) {
-        header("Location: connection.php");
+        header("Location: " . URL_LOGIN);
         exit;
     }
 }
 
 function securite_requireRole(string $role): void {
     securite_requireAuth();
-    if ($_SESSION['role'] !== $role) {
-        header("Location: connection.php");
+    if ($_SESSION[SESS_ROLE] !== $role) {
+        header("Location: " . URL_LOGIN);
         exit;
     }
 }
@@ -33,24 +33,24 @@ function securite_destroySession(): void {
 
 function securite_buildSession(array $user): array {
     return [
-        'user_id' => $user['id_utilisateur'],
+        SESS_USER_ID => $user['id_utilisateur'],
         'email' => $user['email'],
-        'role' => $user['rôle'],
+        SESS_ROLE => $user['rôle'],
         'prenom' => $user['prenom'],
         'nom' => $user['nom'],
-        'medecin_id' => ($user['rôle'] === 'medecin') ? $user['id_utilisateur'] : null,
-        'patient_id' => ($user['rôle'] === 'patient') ? $user['id_utilisateur'] : null,
-        'assistant_id' => ($user['rôle'] === 'assistant') ? $user['id_utilisateur'] : null,
-        'profile_picture' => $user['photo_profil'] ?? null
+        'medecin_id' => ($user['rôle'] === ROLE_MEDECIN) ? $user['id_utilisateur'] : null,
+        SESS_PATIENT_ID => ($user['rôle'] === ROLE_PATIENT) ? $user['id_utilisateur'] : null,
+        'assistant_id' => ($user['rôle'] === ROLE_ASSISTANT) ? $user['id_utilisateur'] : null,
+        SESS_PROFILE_PIC => $user['photo_profil'] ?? null
     ];
 }
 
 function securite_getRedirect(string $role): string {
     return match ($role) {
-        'admin' => 'dashboard_administrateur.php',
-        'medecin' => 'medecin.php',
-        'patient' => 'patient.php',
-        'assistant' => 'assistant.php',
-        default => 'connection.php'
+        ROLE_ADMIN => URL_ADMIN,
+        ROLE_MEDECIN => URL_MEDECIN,
+        ROLE_PATIENT => URL_PATIENT,
+        ROLE_ASSISTANT => URL_ASSISTANT,
+        default => URL_LOGIN
     };
 }

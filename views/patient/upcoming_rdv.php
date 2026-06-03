@@ -23,8 +23,8 @@
                         <td><?= htmlspecialchars($rdv['motif'] ?? '-') ?></td>
                         <td><?= htmlspecialchars($rdv['lieu'] ?? '-') ?></td>
                         <td>
-                            <span class="badge badge-<?= $rdv['statut'] === 'confirme' ? 'confirme' : ($rdv['statut'] === 'annule' ? 'annule' : 'en_attente') ?>">
-                                <?= htmlspecialchars($rdv['statut'] ?? 'en_attente') ?>
+                            <span class="badge badge-<?= $rdv['statut'] === RDV_CONFIRME ? RDV_CONFIRME : ($rdv['statut'] === RDV_ANNULE ? RDV_ANNULE : RDV_EN_ATTENTE) ?>">
+                                <?= htmlspecialchars($rdv['statut'] ?? RDV_EN_ATTENTE) ?>
                             </span>
                         </td>
                     </tr>

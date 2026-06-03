@@ -122,7 +122,7 @@ function assistantService_updatePatient(int $id, array $data): void {
 }
 
 function assistantService_cancelRdv(int $id): void {
-    rdv_updateStatus($id, 'annule');
+    rdv_updateStatus($id, RDV_ANNULE);
 }
 
 function assistantService_deleteHospitalisation(int $id): void {

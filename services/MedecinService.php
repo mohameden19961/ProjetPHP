@@ -79,11 +79,11 @@ function medecinService_deleteOrdonnance(int $id): void {
 }
 
 function medecinService_confirmRdv(int $id): void {
-    rdv_updateStatus($id, 'confirme');
+    rdv_updateStatus($id, RDV_CONFIRME);
 }
 
 function medecinService_cancelRdv(int $id): void {
-    rdv_updateStatus($id, 'annule');
+    rdv_updateStatus($id, RDV_ANNULE);
 }
 
 function medecinService_updateRdv(int $id, array $data): void {
