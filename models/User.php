@@ -96,6 +96,16 @@ function connexion_create(int $idUser, string $login, string $password): void {
     $stmt->close();
 }
 
+function user_findForLogin(string $login): ?array {
+    $conn = getDbConnection();
+    $stmt = $conn->prepare("SELECT c.id_utilisateur, c.mot_de_passe, u.* FROM connexion c JOIN utilisateur u ON c.id_utilisateur = u.id_utilisateur WHERE c.login = ?");
+    $stmt->bind_param("s", $login);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows >= 1) return $result->fetch_assoc();
+    return null;
+}
+
 function user_findByLoginAndPassword(string $login, string $password): ?array {
     $conn = getDbConnection();
     $stmt = $conn->prepare("SELECT c.id_utilisateur, u.* FROM connexion c JOIN utilisateur u ON c.id_utilisateur = u.id_utilisateur WHERE c.login = ? AND c.mot_de_passe = ?");

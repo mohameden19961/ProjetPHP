@@ -35,6 +35,36 @@ function medecinService_getOrdonnances(int $idMedecin): array {
     return ordonnance_getForMedecin($idMedecin);
 }
 
+function medecinService_hasAccessToPatient(int $medecinId, int $patientId): bool {
+    $conn = getDbConnection();
+    $stmt = $conn->prepare("SELECT COUNT(*) as cnt FROM traitement WHERE id_medecin = ? AND id_patient = ?");
+    $stmt->bind_param("ii", $medecinId, $patientId);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+    return $result['cnt'] > 0;
+}
+
+function medecinService_hasAccessToRdv(int $medecinId, int $rdvId): bool {
+    $conn = getDbConnection();
+    $stmt = $conn->prepare("SELECT COUNT(*) as cnt FROM rendezvous r JOIN traitement t ON r.id_traitement = t.id_traitement WHERE t.id_medecin = ? AND r.id_rdv = ?");
+    $stmt->bind_param("ii", $medecinId, $rdvId);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+    return $result['cnt'] > 0;
+}
+
+function medecinService_hasAccessToOrdonnance(int $medecinId, int $ordoId): bool {
+    $conn = getDbConnection();
+    $stmt = $conn->prepare("SELECT COUNT(*) as cnt FROM ordonnance o JOIN traitement t ON o.id_traitement = t.id_traitement WHERE t.id_medecin = ? AND o.id_ordonnance = ?");
+    $stmt->bind_param("ii", $medecinId, $ordoId);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+    return $result['cnt'] > 0;
+}
+
 function medecinService_getPatientById(int $id): ?array {
     return patient_findById($id);
 }

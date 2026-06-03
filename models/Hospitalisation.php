@@ -75,6 +75,6 @@ function hospitalisation_getAllActive(): array {
 
 function hospitalisation_countActive(): int {
     $conn = getDbConnection();
-    $result = $conn->query("SELECT COUNT(DISTINCT id_patient) as total FROM hospitalisation WHERE date_sortie IS NULL OR date_sortie >= CURDATE()");
+    $result = $conn->query("SELECT COUNT(DISTINCT t.id_patient) as total FROM hospitalisation h JOIN traitement t ON h.id_traitement = t.id_traitement WHERE h.date_sortie IS NULL OR h.date_sortie >= CURDATE()");
     return $result->fetch_assoc()['total'];
 }

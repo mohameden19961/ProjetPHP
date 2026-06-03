@@ -31,29 +31,50 @@ function authService_validateRegistration(array $data): array {
 }
 
 function authService_register(array $data): int {
-    $userId = user_create([
-        'nom' => $data['nom'], 'prenom' => $data['prenom'],
-        'email' => $data['email'], 'telephone' => $data['telephone'] ?? '',
-        SESS_ROLE => $data[SESS_ROLE] ?? ROLE_PATIENT
-    ]);
-    $role = $data[SESS_ROLE] ?? ROLE_PATIENT;
-    switch ($role) {
-        case ROLE_MEDECIN:
-            medecin_createFromUser($userId, $data['nom'], $data['prenom'], $data['specialite_medecin'] ?? 'À définir', $data['email'], $data['telephone'] ?? '');
-            break;
-        case ROLE_ASSISTANT:
-            assistant_createFromUser($userId, $data['specialite_assistant'] ?? 'À définir');
-            break;
-        case ROLE_PATIENT:
-            patient_createFromUser($userId, $data['nom'], $data['prenom'], $data['email'], $data['telephone'] ?? '');
-            break;
+    try {
+        $existing = user_findByEmail($data['email']);
+        if ($existing) return -1;
+
+        $userId = user_create([
+            'nom' => $data['nom'], 'prenom' => $data['prenom'],
+            'email' => $data['email'], 'telephone' => $data['telephone'] ?? '',
+            SESS_ROLE => $data[SESS_ROLE] ?? ROLE_PATIENT
+        ]);
+        if (!$userId) return 0;
+
+        $role = $data[SESS_ROLE] ?? ROLE_PATIENT;
+        switch ($role) {
+            case ROLE_MEDECIN:
+                medecin_createFromUser($userId, $data['nom'], $data['prenom'], $data['specialite_medecin'] ?? 'À définir', $data['email'], $data['telephone'] ?? '');
+                break;
+            case ROLE_ASSISTANT:
+                assistant_createFromUser($userId, $data['specialite_assistant'] ?? 'À définir');
+                break;
+            case ROLE_PATIENT:
+                patient_createFromUser($userId, $data['nom'], $data['prenom'], $data['email'], $data['telephone'] ?? '');
+                break;
+        }
+        $hashed = securite_hashPassword($data['password']);
+        connexion_create($userId, $data['email'], $hashed);
+        return $userId;
+    } catch (Exception $e) {
+        $code = $e->getCode();
+        if (in_array($code, [1062, 23000], true)) return -1;
+        return 0;
     }
-    $hashed = securite_hashPassword($data['password']);
-    connexion_create($userId, $data['email'], $hashed);
-    return $userId;
 }
 
 function authService_login(string $email, string $password): ?array {
     if (empty($email) || empty($password)) return null;
-    return user_findByLoginAndPassword($email, securite_hashPassword($password));
+
+    $user = user_findForLogin($email);
+    if ($user && securite_verifyPassword($password, $user['mot_de_passe'])) {
+        return $user;
+    }
+
+    // Timing-safe dummy comparison to prevent user enumeration
+    if (!$user) {
+        securite_verifyPassword($password, securite_hashPassword('dummy_constant'));
+    }
+    return null;
 }

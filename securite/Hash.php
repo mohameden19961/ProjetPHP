@@ -5,5 +5,5 @@ function securite_hashPassword(string $password): string {
 }
 
 function securite_verifyPassword(string $password, string $hash): bool {
-    return hash(HASH_ALGO, $password) === $hash;
+    return hash_equals($hash, hash(HASH_ALGO, $password));
 }

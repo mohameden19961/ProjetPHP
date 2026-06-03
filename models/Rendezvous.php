@@ -11,10 +11,11 @@ function rdv_getUpcomingForPatient(int $patientId): array {
         FROM rendezvous r
         JOIN traitement t ON r.id_traitement = t.id_traitement
         JOIN medecin m ON t.id_medecin = m.id_medecin
-        WHERE t.id_patient = ? AND r.date_rdv >= CURDATE() AND r.statut != '" . RDV_ANNULE . "'
+        WHERE t.id_patient = ? AND r.date_rdv >= CURDATE() AND r.statut != ?
         ORDER BY r.date_rdv ASC, r.heure ASC
     ");
-    $stmt->bind_param("i", $patientId);
+    $annule = RDV_ANNULE;
+    $stmt->bind_param("is", $patientId, $annule);
     $stmt->execute();
     $result = $stmt->get_result();
     $rdvs = $result->fetch_all(MYSQLI_ASSOC);
@@ -29,10 +30,11 @@ function rdv_getUpcomingForMedecin(int $medecinId): array {
         FROM rendezvous r
         JOIN traitement t ON r.id_traitement = t.id_traitement
         JOIN patient p ON t.id_patient = p.id_patient
-        WHERE t.id_medecin = ? AND r.date_rdv >= CURDATE() AND r.statut != '" . RDV_ANNULE . "'
+        WHERE t.id_medecin = ? AND r.date_rdv >= CURDATE() AND r.statut != ?
         ORDER BY r.date_rdv ASC, r.heure ASC
     ");
-    $stmt->bind_param("i", $medecinId);
+    $annule = RDV_ANNULE;
+    $stmt->bind_param("is", $medecinId, $annule);
     $stmt->execute();
     $result = $stmt->get_result();
     $rdvs = $result->fetch_all(MYSQLI_ASSOC);

@@ -24,9 +24,6 @@ $layout = [
         'statistics'    => 'statistics.php',
         'settings'      => 'settings.php',
         'user_details'  => 'user_details.php',
-        'add_user'      => 'add_user.php',
-        'edit_user'     => 'edit_user.php',
-        'delete_account'=> 'delete_account.php',
     ],
     'jsFile'          => 'admin.js',
 ];

@@ -86,15 +86,23 @@ function adminService_updateProfile(int $userId, array $data, array $file): void
         'email' => sanitize($data['email'] ?? ''),
         'telephone' => sanitize($data['telephone'] ?? '')
     ]);
-    if (!empty($file['name'])) {
-        $targetDir = "uploads/profiles/";
+    if (!empty($file['name']) && $file['error'] === UPLOAD_ERR_OK) {
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        if (!in_array($ext, $allowedExtensions, true)) return;
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
+        if (!in_array($mime, $allowedMimes, true)) return;
+        $targetDir = UPLOAD_PATH;
         if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
-        $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $filename = 'profile_' . $userId . '_' . time() . '.' . $ext;
+        $filename = 'profile_' . $userId . '_' . bin2hex(random_bytes(8)) . '.' . $ext;
         $targetFile = $targetDir . $filename;
         if (move_uploaded_file($file['tmp_name'], $targetFile)) {
-            user_updatePhoto($userId, $targetFile);
-            $_SESSION[SESS_PROFILE_PIC] = $targetFile;
+            $relativePath = 'uploads/profiles/' . $filename;
+            user_updatePhoto($userId, $relativePath);
+            $_SESSION[SESS_PROFILE_PIC] = $relativePath;
         }
     }
 }

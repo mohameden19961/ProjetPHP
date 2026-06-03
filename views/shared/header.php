@@ -7,10 +7,10 @@
         <div class="navbar-user">
             <?php $pic = $_SESSION['profile_picture'] ?? ''; ?>
             <?php if ($pic): ?>
-            <img src="<?= $pic ?>" alt="" class="navbar-user-avatar">
+            <img src="<?= htmlspecialchars($pic) ?>" alt="" class="navbar-user-avatar">
             <?php else: ?>
             <div class="navbar-user-avatar-placeholder">
-                <?= strtoupper(substr($_SESSION['prenom'] ?? '', 0, 1) . substr($_SESSION['nom'] ?? '', 0, 1)) ?>
+                <?= htmlspecialchars(strtoupper(substr($_SESSION['prenom'] ?? '', 0, 1) . substr($_SESSION['nom'] ?? '', 0, 1))) ?>
             </div>
             <?php endif; ?>
             <div class="navbar-user-info">

@@ -39,6 +39,7 @@
             <div class="auth-form-body">
                 <div class="form-panel <?= empty($formData) ? 'active' : '' ?>" id="panel-login">
                     <form method="POST" action="connection.php">
+                        <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                         <div class="form-group">
                             <label class="form-label" for="login-email">Email</label>
                             <input type="email" id="login-email" name="email" class="form-control" placeholder="votre@email.com" required>
@@ -56,6 +57,7 @@
                 </div>
                 <div class="form-panel <?= !empty($formData) ? 'active' : '' ?>" id="panel-register">
                     <form method="POST" action="connection.php" id="registration-form">
+                        <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label" for="register-prenom">Prénom</label>
@@ -135,12 +137,12 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script>
     <?php if (isset($formData[SESS_ROLE])): ?>
-    selectRole('<?= $formData[SESS_ROLE] ?>');
+    selectRole(<?= json_encode($formData[SESS_ROLE], JSON_THROW_ON_ERROR) ?>);
     <?php else: ?>
     selectRole('patient');
     <?php endif; ?>
     <?php if ($alert = getAlert()): ?>
-    Swal.fire({ icon: '<?= $alert['icon'] ?>', title: '<?= $alert['title'] ?>', html: '<?= $alert['text'] ?>', confirmButtonColor: '#2563eb', timer: 3000, timerProgressBar: true });
+    Swal.fire(<?= json_encode(['icon' => $alert['icon'], 'title' => $alert['title'], 'html' => $alert['text'], 'confirmButtonColor' => '#2563eb', 'timer' => 3000, 'timerProgressBar' => true], JSON_THROW_ON_ERROR) ?>);
     <?php endif; ?>
     </script>
     <script src="assets/js/auth.js"></script>
