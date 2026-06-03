@@ -1,10 +1,24 @@
-# 🏥 Gestion de Cabinet Médical
+# 🏥 Gestion de Cabinet Médical — Application de Gestion des dossiers des patients
+
+> **Projet Intégrateur** — 1ʳᵉ Année Licence — **Institut Supérieur du Numérique (SUPNUM)**
 
 [![PHP](https://img.shields.io/badge/PHP-8.x-777BB4?logo=php)](https://php.net)
 [![MySQL](https://img.shields.io/badge/MySQL-8.x-4479A1?logo=mysql)](https://mysql.com)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker)](https://docker.com)
 [![License](https://img.shields.io/badge/Licence-MIT-green)](LICENSE)
 [![PRs](https://img.shields.io/badge/PRs-Bienvenue-brightgreen)]()
+
+### 👥 Réalisé par
+
+| Nom | Matricule |
+|-----|-----------|
+| Ahmed Med Lemine Bahan | 24120 |
+| Saadbouh Sidi Mahmoud | 24212 |
+| Abdy Mohameden | 24068 |
+| Zaineb Sidi Maouloud Jakiri | 24206 |
+| Oum Elkheyri Meillid | 24208 |
+
+---
 
 > **Application web de gestion complète pour cabinet médical** — rendez-vous, dossier patients, ordonnances, hospitalisations, examens. Architecture MVC procédurale, pile PHP/MySQL.
 
