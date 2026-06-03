@@ -11,7 +11,7 @@ function medecin_handleRequest(): void {
     $msgType = $_SESSION['msg_type'] ?? '';
     unset($_SESSION['message'], $_SESSION['msg_type']);
 
-    $medecin = medecinService_getInfo($idMedecin);
+    $medecin = medecinService_getById($idMedecin);
     if (!$medecin) redirect('connection.php');
 
     $rendezvous = medecinService_getRendezvous($idMedecin);

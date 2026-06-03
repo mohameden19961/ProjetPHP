@@ -10,7 +10,7 @@ function patient_handleRequest(): void {
     $message = '';
     $msgType = '';
 
-    $patient = patientService_getInfo($idPatient);
+    $patient = patientService_getById($idPatient);
     if (!$patient) redirect('connection.php');
 
     $upcomingRendezvous = patientService_getUpcomingRdv($idPatient);
@@ -25,7 +25,7 @@ function patient_handleRequest(): void {
             patientService_updateProfile($idPatient, $_POST);
             $message = "Profil mis à jour avec succès.";
             $msgType = "success";
-            $patient = patientService_getInfo($idPatient);
+            $patient = patientService_getById($idPatient);
         }
 
         if (isset($_POST['creer_rdv']) && $section === 'create-rdv') {

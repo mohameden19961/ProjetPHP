@@ -19,7 +19,7 @@ try {
         case 'GET':
             requireApiAuth();
             if ($id) {
-                $data = patientService_getInfo($id);
+                $data = patientService_getById($id);
                 if (!$data) {
                     http_response_code(404);
                     echo json_encode(['error' => 'Introuvable']);

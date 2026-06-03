@@ -60,21 +60,20 @@ function adminService_updateUser(int $id, array $data): void {
         'email' => sanitize($data['email'] ?? ''),
         'telephone' => sanitize($data['telephone'] ?? '')
     ]);
-    setAlert('success', 'Succès', "Utilisateur modifié avec succès");
 }
 
-function adminService_addUser(array $data): void {
+function adminService_addUser(array $data): ?int {
     $nom = sanitize($data['nom'] ?? '');
     $prenom = sanitize($data['prenom'] ?? '');
     $email = sanitize($data['email'] ?? '');
     $telephone = sanitize($data['telephone'] ?? '');
     $role = sanitize($data['role'] ?? 'patient');
     $password = $data['password'] ?? '';
-    if (!$nom || !$prenom || !$email || !$password) return;
+    if (!$nom || !$prenom || !$email || !$password) return null;
     $userId = user_create(['nom' => $nom, 'prenom' => $prenom, 'email' => $email, 'telephone' => $telephone, 'role' => $role]);
     $hashed = securite_hashPassword($password);
     connexion_create($userId, $email, $hashed);
-    setAlert('success', 'Succès', "Utilisateur $prenom $nom ajouté avec succès");
+    return $userId;
 }
 
 function adminService_updateProfile(int $userId, array $data, array $file): void {
@@ -85,20 +84,16 @@ function adminService_updateProfile(int $userId, array $data, array $file): void
         'telephone' => sanitize($data['telephone'] ?? '')
     ]);
     if (!empty($file['name'])) {
-        $conn = getDbConnection();
         $targetDir = "uploads/profiles/";
         if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
         $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
         $filename = 'profile_' . $userId . '_' . time() . '.' . $ext;
         $targetFile = $targetDir . $filename;
         if (move_uploaded_file($file['tmp_name'], $targetFile)) {
-            $stmt = $conn->prepare("UPDATE utilisateur SET photo_profil = ? WHERE id_utilisateur = ?");
-            $stmt->bind_param("si", $targetFile, $userId);
-            $stmt->execute();
+            user_updatePhoto($userId, $targetFile);
             $_SESSION['profile_picture'] = $targetFile;
         }
     }
-    setAlert('success', 'Succès', "Profil mis à jour avec succès");
 }
 
 function adminService_deleteUser(int $id): void {
@@ -106,7 +101,6 @@ function adminService_deleteUser(int $id): void {
     medecin_delete($id);
     assistant_delete($id);
     user_delete($id);
-    setAlert('success', 'Succès', "Utilisateur supprimé avec succès");
 }
 
 function adminService_addRdv(array $data): void {
@@ -115,5 +109,4 @@ function adminService_addRdv(array $data): void {
     require_once __DIR__ . '/../models/Traitement.php';
     $idTraitement = traitement_findOrCreate($patientId, $medecinId);
     rdv_create($idTraitement, $data['date_rdv'], $data['heure'], sanitize($data['lieu'] ?? 'Clinique'), sanitize($data['motif'] ?? ''));
-    setAlert('success', 'Succès', "Rendez-vous ajouté avec succès");
 }

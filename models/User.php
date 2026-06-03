@@ -101,6 +101,14 @@ function user_findByLoginAndPassword(string $login, string $password): ?array {
     return null;
 }
 
+function user_updatePhoto(int $id, string $path): void {
+    $conn = getDbConnection();
+    $stmt = $conn->prepare("UPDATE utilisateur SET photo_profil = ? WHERE id_utilisateur = ?");
+    $stmt->bind_param("si", $path, $id);
+    $stmt->execute();
+    $stmt->close();
+}
+
 function connexion_deleteByUserId(int $idUser): void {
     $conn = getDbConnection();
     $stmt = $conn->prepare("DELETE FROM connexion WHERE id_utilisateur = ?");

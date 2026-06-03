@@ -27,10 +27,6 @@ function medecinService_delete(int $id): void {
     medecin_delete($id);
 }
 
-function medecinService_getInfo(int $idMedecin): ?array {
-    return medecin_findById($idMedecin);
-}
-
 function medecinService_getRendezvous(int $idMedecin): array {
     return rdv_getUpcomingForMedecin($idMedecin);
 }

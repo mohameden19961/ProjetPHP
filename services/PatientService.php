@@ -9,7 +9,7 @@ require_once __DIR__ . '/../models/Hospitalisation.php';
 require_once __DIR__ . '/../models/Traitement.php';
 require_once __DIR__ . '/../models/Medecin.php';
 
-function patientService_getInfo(int $idPatient): ?array {
+function patientService_getById(int $idPatient): ?array {
     return patient_findById($idPatient);
 }
 

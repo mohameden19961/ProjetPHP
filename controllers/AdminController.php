@@ -45,22 +45,29 @@ function admin_handleRequest(): void {
 
 function admin_handlePost(): void {
     if (isset($_POST['ajouter_utilisateur'])) {
-        adminService_addUser($_POST);
+        $userId = adminService_addUser($_POST);
+        if ($userId) {
+            setAlert('success', 'Succès', "Utilisateur ajouté avec succès");
+        }
     }
 
     if (isset($_POST['modifier_utilisateur'])) {
         adminService_updateUser((int)$_POST['user_id'], $_POST);
+        setAlert('success', 'Succès', "Utilisateur modifié avec succès");
     }
 
     if (isset($_POST['update_profile'])) {
         adminService_updateProfile((int)$_SESSION['user_id'], $_POST, $_FILES['profile_picture'] ?? []);
+        setAlert('success', 'Succès', "Profil mis à jour avec succès");
     }
 
     if (isset($_POST['supprimer_utilisateur'])) {
         adminService_deleteUser((int)$_POST['user_id']);
+        setAlert('success', 'Succès', "Utilisateur supprimé avec succès");
     }
 
     if (isset($_POST['ajouter_rdv'])) {
         adminService_addRdv($_POST);
+        setAlert('success', 'Succès', "Rendez-vous ajouté avec succès");
     }
 }
