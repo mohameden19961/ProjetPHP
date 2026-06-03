@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <?php $title = $layout['title']; require __DIR__ . '/head.php'; ?>
+    <?php $title = $layout['title']; require __DIR__ . '/head.html'; ?>
 </head>
 <body>
     <?php require __DIR__ . '/header.php'; ?>
@@ -30,9 +30,9 @@
             </div>
             <?php endforeach; ?>
             <?php
-            $__file = ($layout['viewMap'][$layout['view']] ?? null) ?: 'dashboard.php';
-            $__path = __DIR__ . '/../' . $layout['role'] . '/' . $__file;
-            require file_exists($__path) ? $__path : (__DIR__ . '/../' . $layout['role'] . '/dashboard.php');
+$__file = ($layout['viewMap'][$layout['view']] ?? null) ?: 'dashboard.html';
+$__path = __DIR__ . '/../' . $layout['role'] . '/' . $__file;
+require file_exists($__path) ? $__path : (__DIR__ . '/../' . $layout['role'] . '/dashboard.html');
             ?>
         </main>
     </div>
