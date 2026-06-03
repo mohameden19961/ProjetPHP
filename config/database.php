@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../securite/Sanitizer.php';
+require_once __DIR__ . '/../exception/_require.php';
 
 function getDbConnection(): mysqli {
     static $conn = null;
@@ -22,12 +23,12 @@ function getDbConnection(): mysqli {
         $port     = $_ENV['MYSQLPORT']     ?? '3306';
 
         if (!$host || !$user || !$database) {
-            die("Erreur : Fichier .env manquant ou incomplet. Copiez .env.example en .env et configurez vos accès MySQL.");
+            exception_dbError("Fichier .env manquant ou incomplet. Copiez .env.example en .env et configurez vos accès MySQL.");
         }
 
         $conn = new mysqli($host, $user, $password, $database, (int)$port);
         if ($conn->connect_error) {
-            die("Erreur de connexion : " . $conn->connect_error);
+            exception_dbError("Connexion MySQL impossible : " . $conn->connect_error);
         }
         $conn->set_charset("utf8mb4");
     }

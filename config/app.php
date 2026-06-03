@@ -98,17 +98,15 @@ function getAlert(): ?array {
 
 function requireApiAuth(): void {
     if (!securite_isAuthenticated()) {
-        http_response_code(401);
-        echo json_encode(['error' => 'Authentification requise']);
-        exit;
+        exception_authRequired();
     }
 }
 
 function requireApiRole(array $roles): void {
     requireApiAuth();
     if (!in_array($_SESSION[SESS_ROLE] ?? '', $roles)) {
-        http_response_code(403);
-        echo json_encode(['error' => 'Accès interdit. Rôle requis: ' . implode(', ', $roles)]);
-        exit;
+        exception_forbidden('Accès interdit. Rôle requis: ' . implode(', ', $roles));
     }
 }
+
+require_once __DIR__ . '/../exception/_require.php';
