@@ -66,12 +66,17 @@ function user_update(int $id, array $data): void {
     $fields = [];
     $types = '';
     $values = [];
-    foreach (['nom', 'prenom', 'email', 'telephone', 'rôle'] as $field) {
+    foreach (['nom', 'prenom', 'email', 'telephone'] as $field) {
         if (isset($data[$field])) {
             $fields[] = "$field = ?";
             $types .= 's';
             $values[] = $data[$field];
         }
+    }
+    if (isset($data['role']) || isset($data['rôle'])) {
+        $fields[] = "rôle = ?";
+        $types .= 's';
+        $values[] = $data['role'] ?? $data['rôle'];
     }
     if (!empty($fields)) {
         $types .= 'i';

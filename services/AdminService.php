@@ -3,9 +3,12 @@
 require_once __DIR__ . '/../config/app.php';
 require_once __DIR__ . '/../securite/Hash.php';
 require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../models/Medecin.php';
+require_once __DIR__ . '/../models/Assistant.php';
 require_once __DIR__ . '/../models/Rendezvous.php';
 require_once __DIR__ . '/../models/Ordonnance.php';
 require_once __DIR__ . '/../models/Hospitalisation.php';
+require_once __DIR__ . '/../models/Traitement.php';
 
 function adminService_getStats(): array {
     return [
@@ -106,7 +109,6 @@ function adminService_deleteUser(int $id): void {
 function adminService_addRdv(array $data): void {
     $patientId = (int)($data['patient_id'] ?? 0);
     $medecinId = (int)($data['medecin_id'] ?? 0);
-    require_once __DIR__ . '/../models/Traitement.php';
     $idTraitement = traitement_findOrCreate($patientId, $medecinId);
     rdv_create($idTraitement, $data['date_rdv'], $data['heure'], sanitize($data['lieu'] ?? 'Clinique'), sanitize($data['motif'] ?? ''));
 }

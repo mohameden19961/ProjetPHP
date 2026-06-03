@@ -35,25 +35,31 @@ function assistant_findById(int $id): ?array {
 
 function assistant_update(int $id, array $data): bool {
     $conn = getDbConnection();
-    $fields = [];
-    $types = "";
-    $values = [];
-    foreach (['nom', 'prenom', 'email', 'téléphone', 'departement'] as $field) {
+    $userFields = [];
+    $userTypes = "";
+    $userValues = [];
+    foreach (['nom', 'prenom', 'email', 'telephone'] as $field) {
         if (isset($data[$field])) {
-            $fields[] = "$field = ?";
-            $types .= "s";
-            $values[] = $data[$field];
+            $userFields[] = "$field = ?";
+            $userTypes .= "s";
+            $userValues[] = $data[$field];
         }
     }
-    if (empty($fields)) return false;
-    $types .= "i";
-    $values[] = $id;
-    $sql = "UPDATE assistant SET " . implode(", ", $fields) . " WHERE id_utilisateur = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param($types, ...$values);
-    $success = $stmt->execute();
-    $stmt->close();
-    return $success;
+    if (!empty($userFields)) {
+        $userTypes .= "i";
+        $userValues[] = $id;
+        $stmt = $conn->prepare("UPDATE utilisateur SET " . implode(", ", $userFields) . " WHERE id_utilisateur = ?");
+        $stmt->bind_param($userTypes, ...$userValues);
+        $stmt->execute();
+        $stmt->close();
+    }
+    if (isset($data['departement'])) {
+        $stmt = $conn->prepare("UPDATE assistant SET departement = ? WHERE id_utilisateur = ?");
+        $stmt->bind_param("si", $data['departement'], $id);
+        $stmt->execute();
+        $stmt->close();
+    }
+    return true;
 }
 
 function assistant_delete(int $id): bool {

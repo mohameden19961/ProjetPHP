@@ -15,6 +15,10 @@ function patient_findById(int $id): ?array {
 
 function patient_createFromUser(int $userId, string $nom, string $prenom, string $email, string $telephone): bool {
     $conn = getDbConnection();
+    $stmt = $conn->prepare("DELETE FROM patient WHERE id_patient = ?");
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+    $stmt->close();
     $stmt = $conn->prepare("INSERT INTO patient (id_patient, nom, prenom, email, telephone) VALUES (?, ?, ?, ?, ?)");
     $stmt->bind_param("issss", $userId, $nom, $prenom, $email, $telephone);
     $success = $stmt->execute();

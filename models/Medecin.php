@@ -15,6 +15,10 @@ function medecin_findById(int $id): ?array {
 
 function medecin_createFromUser(int $userId, string $nom, string $prenom, string $specialite, string $email, string $telephone): bool {
     $conn = getDbConnection();
+    $stmt = $conn->prepare("DELETE FROM medecin WHERE id_medecin = ?");
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+    $stmt->close();
     $stmt = $conn->prepare("INSERT INTO medecin (id_medecin, nom, prenom, spécialité, email, telephone) VALUES (?, ?, ?, ?, ?, ?)");
     $stmt->bind_param("isssss", $userId, $nom, $prenom, $specialite, $email, $telephone);
     $success = $stmt->execute();
@@ -70,7 +74,7 @@ function medecin_update(int $id, array $data): bool {
     $fields = [];
     $types = "";
     $values = [];
-    foreach (['nom', 'prenom', 'spécialité', 'email', 'téléphone'] as $field) {
+    foreach (['nom', 'prenom', 'spécialité', 'email', 'telephone'] as $field) {
         if (isset($data[$field])) {
             $fields[] = "$field = ?";
             $types .= "s";

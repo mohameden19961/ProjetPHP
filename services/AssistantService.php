@@ -1,6 +1,8 @@
 <?php
 
 require_once __DIR__ . '/../config/app.php';
+require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../models/Assistant.php';
 require_once __DIR__ . '/../models/Patient.php';
 require_once __DIR__ . '/../models/Medecin.php';
 require_once __DIR__ . '/../models/Rendezvous.php';

@@ -2,6 +2,8 @@
 
 require_once __DIR__ . '/../config/app.php';
 require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../models/Medecin.php';
+require_once __DIR__ . '/../models/Assistant.php';
 
 function userService_getAll(array $params): array {
     $role = $params['role'] ?? '';

@@ -8,9 +8,7 @@
                     <label class="form-label">Médecin</label>
                     <select name="medecin_id" class="form-control" required>
                         <option value="">Sélectionner...</option>
-                        <?php
-                        $allMedecins = medecin_getAll();
-                        foreach ($allMedecins as $m): ?>
+                        <?php foreach ($medecins as $m): ?>
                         <option value="<?= $m['id_medecin'] ?>">Dr. <?= htmlspecialchars($m['prenom'] . ' ' . $m['nom']) ?> (<?= htmlspecialchars($m['spécialité'] ?? 'Généraliste') ?>)</option>
                         <?php endforeach; ?>
                     </select>
