@@ -48,23 +48,12 @@ function authService_register(array $data): int {
             patient_createFromUser($userId, $data['nom'], $data['prenom'], $data['email'], $data['telephone'] ?? '');
             break;
     }
-    $conn = getDbConnection();
     $hashed = securite_hashPassword($data['password']);
-    $stmt = $conn->prepare("INSERT INTO connexion (id_utilisateur, login, mot_de_passe) VALUES (?, ?, ?)");
-    $stmt->bind_param("iss", $userId, $data['email'], $hashed);
-    $stmt->execute();
-    $stmt->close();
+    connexion_create($userId, $data['email'], $hashed);
     return $userId;
 }
 
 function authService_login(string $email, string $password): ?array {
     if (empty($email) || empty($password)) return null;
-    $conn = getDbConnection();
-    $hashed = securite_hashPassword($password);
-    $stmt = $conn->prepare("SELECT c.id_utilisateur, u.* FROM connexion c JOIN utilisateur u ON c.id_utilisateur = u.id_utilisateur WHERE c.login = ? AND c.mot_de_passe = ?");
-    $stmt->bind_param("ss", $email, $hashed);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($result->num_rows >= 1) return $result->fetch_assoc();
-    return null;
+    return user_findByLoginAndPassword($email, securite_hashPassword($password));
 }

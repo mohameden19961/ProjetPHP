@@ -7,6 +7,26 @@ require_once __DIR__ . '/../models/Rendezvous.php';
 require_once __DIR__ . '/../models/Ordonnance.php';
 require_once __DIR__ . '/../models/Traitement.php';
 
+function medecinService_getAll(): array {
+    return medecin_getAll();
+}
+
+function medecinService_getById(int $id): ?array {
+    return medecin_findById($id);
+}
+
+function medecinService_create(int $idUser, string $nom, string $prenom, string $specialite, string $email, string $telephone): void {
+    medecin_createFromUser($idUser, $nom, $prenom, $specialite, $email, $telephone);
+}
+
+function medecinService_update(int $id, array $data): void {
+    medecin_update($id, $data);
+}
+
+function medecinService_delete(int $id): void {
+    medecin_delete($id);
+}
+
 function medecinService_getInfo(int $idMedecin): ?array {
     return medecin_findById($idMedecin);
 }
@@ -32,8 +52,7 @@ function medecinService_getPatients(int $idMedecin): array {
 }
 
 function medecinService_deletePatient(int $id): void {
-    $conn = getDbConnection();
-    $conn->query("DELETE FROM patient WHERE id_patient = $id");
+    patient_delete($id);
 }
 
 function medecinService_updatePatient(int $id, array $data): void {
@@ -60,8 +79,7 @@ function medecinService_createOrdonnance(int $medecinId, array $data): void {
 }
 
 function medecinService_deleteOrdonnance(int $id): void {
-    $conn = getDbConnection();
-    $conn->query("DELETE FROM ordonnance WHERE id_ordonnance = $id");
+    ordonnance_delete($id);
 }
 
 function medecinService_confirmRdv(int $id): void {

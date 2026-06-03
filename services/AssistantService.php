@@ -8,14 +8,28 @@ require_once __DIR__ . '/../models/Examen.php';
 require_once __DIR__ . '/../models/Hospitalisation.php';
 require_once __DIR__ . '/../models/Traitement.php';
 
+function assistantService_getAll(): array {
+    return assistant_getAll();
+}
+
+function assistantService_getById(int $id): ?array {
+    return assistant_findById($id);
+}
+
+function assistantService_create(int $idUser, string $departement): void {
+    assistant_createFromUser($idUser, $departement);
+}
+
+function assistantService_update(int $id, array $data): void {
+    assistant_update($id, $data);
+}
+
+function assistantService_delete(int $id): void {
+    assistant_delete($id);
+}
+
 function assistantService_getProfile(int $userId): ?array {
-    $conn = getDbConnection();
-    $stmt = $conn->prepare("SELECT nom, prenom, email FROM utilisateur WHERE id_utilisateur = ?");
-    $stmt->bind_param("i", $userId);
-    $stmt->execute();
-    $result = $stmt->get_result()->fetch_assoc();
-    $stmt->close();
-    return $result ?: null;
+    return user_findById($userId);
 }
 
 function assistantService_getAllPatients(): array {

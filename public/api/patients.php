@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/../../config/app.php';
 require_once __DIR__ . '/../../services/PatientService.php';
-require_once __DIR__ . '/../../models/Patient.php';
 
 header('Content-Type: application/json');
 
@@ -20,7 +19,7 @@ try {
         case 'GET':
             requireApiAuth();
             if ($id) {
-                $data = patient_findById($id);
+                $data = patientService_getInfo($id);
                 if (!$data) {
                     http_response_code(404);
                     echo json_encode(['error' => 'Introuvable']);
@@ -31,26 +30,26 @@ try {
             } else {
                 requireApiRole(['admin', 'medecin', 'assistant']);
                 http_response_code(200);
-                echo json_encode(patient_getAll());
+                echo json_encode(patientService_getAll());
             }
             break;
         case 'POST':
             requireApiRole(['admin', 'medecin', 'assistant']);
-            $newId = patient_create($_POST);
+            $newId = patientService_create($_POST);
             http_response_code(201);
             echo json_encode(['message' => 'Créé avec succès', 'id' => $newId]);
             break;
         case 'PUT':
             requireApiRole(['admin', 'medecin', 'assistant']);
             if (!$id) { http_response_code(400); echo json_encode(['error' => 'ID requis']); exit; }
-            patient_update($id, $_POST);
+            patientService_update($id, $_POST);
             http_response_code(200);
             echo json_encode(['message' => 'Mis à jour avec succès']);
             break;
         case 'DELETE':
             requireApiRole(['admin']);
             if (!$id) { http_response_code(400); echo json_encode(['error' => 'ID requis']); exit; }
-            patient_delete($id);
+            patientService_delete($id);
             http_response_code(200);
             echo json_encode(['message' => 'Supprimé avec succès']);
             break;

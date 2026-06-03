@@ -21,13 +21,7 @@ function adminService_getStats(): array {
 }
 
 function adminService_getProfile(int $userId): ?array {
-    $conn = getDbConnection();
-    $stmt = $conn->prepare("SELECT nom, prenom, email, telephone, photo_profil FROM utilisateur WHERE id_utilisateur = ?");
-    $stmt->bind_param("i", $userId);
-    $stmt->execute();
-    $result = $stmt->get_result()->fetch_assoc();
-    $stmt->close();
-    return $result ?: null;
+    return user_findById($userId);
 }
 
 function adminService_getUsers(string $view, string $search, string $departement): array {
@@ -60,15 +54,12 @@ function adminService_getAllHospitalisations(): array {
 }
 
 function adminService_updateUser(int $id, array $data): void {
-    $conn = getDbConnection();
-    $nom = sanitize($data['nom'] ?? '');
-    $prenom = sanitize($data['prenom'] ?? '');
-    $email = sanitize($data['email'] ?? '');
-    $telephone = sanitize($data['telephone'] ?? '');
-    $stmt = $conn->prepare("UPDATE utilisateur SET nom = ?, prenom = ?, email = ?, telephone = ? WHERE id_utilisateur = ?");
-    $stmt->bind_param("ssssi", $nom, $prenom, $email, $telephone, $id);
-    $stmt->execute();
-    $stmt->close();
+    user_update($id, [
+        'nom' => sanitize($data['nom'] ?? ''),
+        'prenom' => sanitize($data['prenom'] ?? ''),
+        'email' => sanitize($data['email'] ?? ''),
+        'telephone' => sanitize($data['telephone'] ?? '')
+    ]);
     setAlert('success', 'Succès', "Utilisateur modifié avec succès");
 }
 
@@ -80,35 +71,30 @@ function adminService_addUser(array $data): void {
     $role = sanitize($data['role'] ?? 'patient');
     $password = $data['password'] ?? '';
     if (!$nom || !$prenom || !$email || !$password) return;
-    $conn = getDbConnection();
     $userId = user_create(['nom' => $nom, 'prenom' => $prenom, 'email' => $email, 'telephone' => $telephone, 'role' => $role]);
     $hashed = securite_hashPassword($password);
-    $stmt = $conn->prepare("INSERT INTO connexion (id_utilisateur, login, mot_de_passe) VALUES (?, ?, ?)");
-    $stmt->bind_param("iss", $userId, $email, $hashed);
-    $stmt->execute();
-    $stmt->close();
+    connexion_create($userId, $email, $hashed);
     setAlert('success', 'Succès', "Utilisateur $prenom $nom ajouté avec succès");
 }
 
 function adminService_updateProfile(int $userId, array $data, array $file): void {
-    $conn = getDbConnection();
-    $nom = sanitize($data['nom'] ?? '');
-    $prenom = sanitize($data['prenom'] ?? '');
-    $email = sanitize($data['email'] ?? '');
-    $telephone = sanitize($data['telephone'] ?? '');
-    $stmt = $conn->prepare("UPDATE utilisateur SET nom = ?, prenom = ?, email = ?, telephone = ? WHERE id_utilisateur = ?");
-    $stmt->bind_param("ssssi", $nom, $prenom, $email, $telephone, $userId);
-    $stmt->execute();
+    user_update($userId, [
+        'nom' => sanitize($data['nom'] ?? ''),
+        'prenom' => sanitize($data['prenom'] ?? ''),
+        'email' => sanitize($data['email'] ?? ''),
+        'telephone' => sanitize($data['telephone'] ?? '')
+    ]);
     if (!empty($file['name'])) {
+        $conn = getDbConnection();
         $targetDir = "uploads/profiles/";
         if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
         $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
         $filename = 'profile_' . $userId . '_' . time() . '.' . $ext;
         $targetFile = $targetDir . $filename;
         if (move_uploaded_file($file['tmp_name'], $targetFile)) {
-            $stmt2 = $conn->prepare("UPDATE utilisateur SET photo_profil = ? WHERE id_utilisateur = ?");
-            $stmt2->bind_param("si", $targetFile, $userId);
-            $stmt2->execute();
+            $stmt = $conn->prepare("UPDATE utilisateur SET photo_profil = ? WHERE id_utilisateur = ?");
+            $stmt->bind_param("si", $targetFile, $userId);
+            $stmt->execute();
             $_SESSION['profile_picture'] = $targetFile;
         }
     }
@@ -116,11 +102,10 @@ function adminService_updateProfile(int $userId, array $data, array $file): void
 }
 
 function adminService_deleteUser(int $id): void {
-    $conn = getDbConnection();
-    $conn->query("DELETE FROM connexion WHERE id_utilisateur=$id");
-    $conn->query("DELETE FROM assistant WHERE id_utilisateur=$id");
-    $conn->query("DELETE FROM medecin WHERE id_medecin=$id");
-    $conn->query("DELETE FROM utilisateur WHERE id_utilisateur=$id");
+    connexion_deleteByUserId($id);
+    medecin_delete($id);
+    assistant_delete($id);
+    user_delete($id);
     setAlert('success', 'Succès', "Utilisateur supprimé avec succès");
 }
 

@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/../../config/app.php';
-require_once __DIR__ . '/../../models/Hospitalisation.php';
-require_once __DIR__ . '/../../models/Traitement.php';
+require_once __DIR__ . '/../../services/HospitalisationService.php';
 
 header('Content-Type: application/json');
 
@@ -20,7 +19,7 @@ try {
         case 'GET':
             requireApiAuth();
             if ($id) {
-                $data = hospitalisation_findById($id);
+                $data = hospitalisationService_getById($id);
                 if (!$data) {
                     http_response_code(404);
                     echo json_encode(['error' => 'Introuvable']);
@@ -31,29 +30,31 @@ try {
             } else {
                 requireApiRole(['admin', 'medecin', 'assistant']);
                 http_response_code(200);
-                echo json_encode(hospitalisation_getAllActive());
+                echo json_encode(hospitalisationService_getAll());
             }
             break;
         case 'POST':
             requireApiRole(['admin', 'medecin', 'assistant']);
-            $patientId = (int)($_POST['patient_id'] ?? 0);
-            $medecinId = (int)($_POST['medecin_id'] ?? 0);
-            $idTraitement = traitement_findOrCreate($patientId, $medecinId);
-            hospitalisation_create($idTraitement, $_POST['date_admission'] ?? '', null, $_POST['motif'] ?? '');
+            hospitalisationService_create(
+                (int)($_POST['patient_id'] ?? 0),
+                (int)($_POST['medecin_id'] ?? 0),
+                $_POST['date_admission'] ?? '',
+                $_POST['motif'] ?? ''
+            );
             http_response_code(201);
             echo json_encode(['message' => 'Créé avec succès']);
             break;
         case 'PUT':
             requireApiRole(['admin', 'medecin']);
             if (!$id) { http_response_code(400); echo json_encode(['error' => 'ID requis']); exit; }
-            hospitalisation_update($id, $_POST['date_entree'] ?? '', $_POST['date_sortie'] ?? null, $_POST['motif'] ?? '');
+            hospitalisationService_update($id, $_POST['date_entree'] ?? '', $_POST['date_sortie'] ?? null, $_POST['motif'] ?? '');
             http_response_code(200);
             echo json_encode(['message' => 'Mis à jour avec succès']);
             break;
         case 'DELETE':
             requireApiRole(['admin', 'medecin']);
             if (!$id) { http_response_code(400); echo json_encode(['error' => 'ID requis']); exit; }
-            hospitalisation_delete($id);
+            hospitalisationService_delete($id);
             http_response_code(200);
             echo json_encode(['message' => 'Supprimé avec succès']);
             break;

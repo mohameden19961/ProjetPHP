@@ -48,6 +48,22 @@ function patientService_createRdv(int $patientId, array $data): void {
     rdv_create($idTraitement, $data['date_rdv'], $data['heure'], 'Clinique', sanitize($data['motif'] ?? ''));
 }
 
+function patientService_getAll(): array {
+    return patient_getAll();
+}
+
+function patientService_create(array $data): int {
+    return patient_create($data);
+}
+
+function patientService_update(int $id, array $data): void {
+    patient_update($id, $data);
+}
+
+function patientService_delete(int $id): void {
+    patient_delete($id);
+}
+
 function patientService_createHospitalisation(int $patientId, array $data): void {
     $medecinId = (int)($data['medecin_id'] ?? 0);
     $idTraitement = traitement_findOrCreate($patientId, $medecinId);

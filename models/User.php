@@ -55,6 +55,71 @@ function user_countByRole(string $role): int {
     return $result['total'];
 }
 
+function user_getAll(): array {
+    $conn = getDbConnection();
+    $result = $conn->query("SELECT * FROM utilisateur ORDER BY nom, prenom");
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+
+function user_update(int $id, array $data): void {
+    $conn = getDbConnection();
+    $fields = [];
+    $types = '';
+    $values = [];
+    foreach (['nom', 'prenom', 'email', 'telephone', 'rôle'] as $field) {
+        if (isset($data[$field])) {
+            $fields[] = "$field = ?";
+            $types .= 's';
+            $values[] = $data[$field];
+        }
+    }
+    if (!empty($fields)) {
+        $types .= 'i';
+        $values[] = $id;
+        $stmt = $conn->prepare("UPDATE utilisateur SET " . implode(', ', $fields) . " WHERE id_utilisateur = ?");
+        $stmt->bind_param($types, ...$values);
+        $stmt->execute();
+        $stmt->close();
+    }
+}
+
+function connexion_create(int $idUser, string $login, string $password): void {
+    $conn = getDbConnection();
+    $stmt = $conn->prepare("INSERT INTO connexion (id_utilisateur, login, mot_de_passe) VALUES (?, ?, ?)");
+    $stmt->bind_param("iss", $idUser, $login, $password);
+    $stmt->execute();
+    $stmt->close();
+}
+
+function user_findByLoginAndPassword(string $login, string $password): ?array {
+    $conn = getDbConnection();
+    $stmt = $conn->prepare("SELECT c.id_utilisateur, u.* FROM connexion c JOIN utilisateur u ON c.id_utilisateur = u.id_utilisateur WHERE c.login = ? AND c.mot_de_passe = ?");
+    $stmt->bind_param("ss", $login, $password);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows >= 1) return $result->fetch_assoc();
+    return null;
+}
+
+function connexion_deleteByUserId(int $idUser): void {
+    $conn = getDbConnection();
+    $stmt = $conn->prepare("DELETE FROM connexion WHERE id_utilisateur = ?");
+    $stmt->bind_param("i", $idUser);
+    $stmt->execute();
+    $stmt->close();
+}
+
+function connexion_findByLogin(string $login): ?array {
+    $conn = getDbConnection();
+    $stmt = $conn->prepare("SELECT c.id_utilisateur, u.* FROM connexion c JOIN utilisateur u ON c.id_utilisateur = u.id_utilisateur WHERE c.login = ?");
+    $stmt->bind_param("s", $login);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
+    $stmt->close();
+    return $user ?: null;
+}
+
 function user_search(string $query): array {
     $conn = getDbConnection();
     $search = "%$query%";

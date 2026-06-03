@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/../../config/app.php';
-require_once __DIR__ . '/../../models/Rendezvous.php';
-require_once __DIR__ . '/../../models/Traitement.php';
+require_once __DIR__ . '/../../services/RendezvousService.php';
 
 header('Content-Type: application/json');
 
@@ -20,7 +19,7 @@ try {
         case 'GET':
             requireApiAuth();
             if ($id) {
-                $data = rdv_findById($id);
+                $data = rdvService_getById($id);
                 if (!$data) {
                     http_response_code(404);
                     echo json_encode(['error' => 'Introuvable']);
@@ -31,29 +30,33 @@ try {
             } else {
                 requireApiRole(['admin', 'medecin', 'assistant']);
                 http_response_code(200);
-                echo json_encode(rdv_getAll());
+                echo json_encode(rdvService_getAll());
             }
             break;
         case 'POST':
             requireApiRole(['admin', 'medecin', 'assistant', 'patient']);
-            $patientId = (int)($_POST['patient_id'] ?? 0);
-            $medecinId = (int)($_POST['medecin_id'] ?? 0);
-            $idTraitement = traitement_findOrCreate($patientId, $medecinId);
-            rdv_create($idTraitement, $_POST['date_rdv'] ?? '', $_POST['heure'] ?? '', $_POST['lieu'] ?? 'Clinique', $_POST['motif'] ?? '');
+            rdvService_create(
+                (int)($_POST['patient_id'] ?? 0),
+                (int)($_POST['medecin_id'] ?? 0),
+                $_POST['date_rdv'] ?? '',
+                $_POST['heure'] ?? '',
+                $_POST['lieu'] ?? 'Clinique',
+                $_POST['motif'] ?? ''
+            );
             http_response_code(201);
             echo json_encode(['message' => 'Créé avec succès']);
             break;
         case 'PUT':
             requireApiRole(['admin', 'medecin']);
             if (!$id) { http_response_code(400); echo json_encode(['error' => 'ID requis']); exit; }
-            rdv_update($id, $_POST['date_rdv'] ?? '', $_POST['heure'] ?? '', $_POST['lieu'] ?? '', $_POST['motif'] ?? '');
+            rdvService_update($id, $_POST['date_rdv'] ?? '', $_POST['heure'] ?? '', $_POST['lieu'] ?? '', $_POST['motif'] ?? '');
             http_response_code(200);
             echo json_encode(['message' => 'Mis à jour avec succès']);
             break;
         case 'DELETE':
             requireApiRole(['admin', 'medecin', 'assistant']);
             if (!$id) { http_response_code(400); echo json_encode(['error' => 'ID requis']); exit; }
-            rdv_updateStatus($id, 'annule');
+            rdvService_cancel($id);
             http_response_code(200);
             echo json_encode(['message' => 'Annulé avec succès']);
             break;
